@@ -1,0 +1,46 @@
+body {
+    font-family:
+        "Inter",
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        sans-serif;
+}
+
+:root {
+    --dark-green: #159546;
+    --light-green: #35bf30;
+    --secondary-color: #f3f4f6;
+}
+
+.color-primary {
+    color: var(--dark-green);
+}
+
+.light-green {
+    color: var(--light-green);
+}
+
+.bg-primary {
+    background-color: var(--dark-green);
+}
+
+.bg-secondary {
+    background-color: var(--secondary-color);
+}
+
+.border-primary {
+    border-color: var(--dark-green);
+}
+
+.border-light-green {
+    border-color: var(--light-green);
+}
+
+.border-secondary {
+    border-color: var(--secondary-color);
+}
+
+.news-filter {
+    border-bottom: 2px solid #e5e7eb;
+}
