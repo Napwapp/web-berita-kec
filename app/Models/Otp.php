@@ -10,6 +10,5 @@ class Otp extends Model
         'user_id',
         'otp',
         'expired_at',
-        'verified_at',
     ];
 }
