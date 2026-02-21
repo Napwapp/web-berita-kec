@@ -33,7 +33,7 @@ class AuthenticatedSessionController extends Controller
             $user->role === 'admin'
             ? route('dashboard', absolute: false)
             : '/'
-        );
+        )->with('success', 'Selamat! Anda berhasil login.');
     }
 
     /**

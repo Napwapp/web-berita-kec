@@ -60,7 +60,7 @@ class LoginRequest extends FormRequest
             $verificationUrl = route('verification.otp');
 
             throw ValidationException::withMessages([
-                'email' => "Email belum diverifikasi. Jika kamu sudah mendaftar namun belum sempat verifikasi, silakan <a href='{$verificationUrl}' class='underline text-blue-600'>kembali ke halaman verifikasi</a>.",
+                'email' => "Email belum diverifikasi. Jika kamu sudah mendaftar namun belum sempat verifikasi, silakan coba <a href='{$verificationUrl}' class='underline text-blue-600'>kembali ke halaman verifikasi</a>.",
             ]);
         }
 

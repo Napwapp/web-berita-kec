@@ -32,24 +32,27 @@ $icon = $config['icon'];
 @endphp
 
 @if ($message)
-    <div {{ $attributes->merge(['class' => $class]) }} role="alert">
-        <!-- Icon -->
-        <div class="flex-shrink-0 mt-0.5">
-            <i class="fa-solid {{ $icon }} text-base"></i>
-        </div>
+    <div class="fixed top-4 left-1/2 -translate-x-1/2 z-[9999] w-full max-w-md px-4">
+        <div {{ $attributes->merge(['class' => $class]) }} role="alert">
+            <!-- Icon kiri -->
+            <div class="flex-shrink-0 mt-0.5">
+                <i class="fa-solid {{ $icon }} text-base"></i>
+            </div>
+    
+            <!-- Message -->
+            <div class="flex-1">
+                {!! $message !!}
+            </div>
 
-        <div class="flex-1">
-            {!! $message !!}
+            <!-- Close button -->
+            <button
+                type="button"
+                onclick="closeAlert(this)"
+                class="flex-shrink-0 opacity-70 hover:opacity-100 transition"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
         </div>
-
-        <!-- Tombol close -->
-        <button
-            type="button"
-            onclick="closeAlert(this)"
-            class="flex-shrink-0 opacity-70 hover:opacity-100 transition"
-        >
-            <i class="fa-solid fa-xmark"></i>
-        </button>
     </div>
 @endif
 

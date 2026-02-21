@@ -11,6 +11,7 @@
 </head>
 
 </body>
+
 <body class="min-h-dvh flex flex-col bg-gray-100 text-gray-800">
     <header>
         {{ $header ?? '' }}
