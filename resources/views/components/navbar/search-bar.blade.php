@@ -10,8 +10,8 @@
             placeholder="Berita apa yang ingin anda cari?" required />
     </div>
 
-    <button type="submit"
-        class="py-2.5 px-4 ms-2 text-sm font-medium text-white bg-primary rounded-lg border border-light-green hover:bg-green-500">
+    <x-button type="submit"
+        class="py-2.5 ms-2 text-sm font-medium text-white bg-primary rounded-lg hover:bg-green-500">
         <span>Cari</span>
-    </button>
+    </x-button>
 </form>

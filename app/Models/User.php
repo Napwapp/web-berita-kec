@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable
 {
@@ -18,6 +19,7 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
+        'google_id',
         'name',
         'email',
         'password',
@@ -47,6 +49,22 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    // Accessor untuk mendapatkan URL foto profil, baik dari Google atau lokal
+    public function getProfilePhotoAttribute()
+    {
+        if (!$this->profile_picture) {
+            // Tidak ada foto sama sekali, pakai default
+            return Storage::url('images/profile-pictures/default-profile.webp');
+        }
+
+        // Cek apakah URL eksternal (dari Google) atau path lokal
+        if (str_starts_with($this->profile_picture, 'http')) {
+            return $this->profile_picture;
+        }
+
+        return Storage::url($this->profile_picture);
     }
 
     // Satu pengguna (author) dapat memiliki banyak berita.
