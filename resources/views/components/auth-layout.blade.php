@@ -1,4 +1,7 @@
-@props(['title' => 'Document'])
+@props([
+    'title' => 'Document',
+    'heading' => 'Selamat Datang'
+])
 
 <!DOCTYPE html>
 <html lang="en">
@@ -17,11 +20,19 @@
         {{ $header ?? '' }}
     </header>
 
-    <main class="flex-1 flex items-center justify-center">
-        <div class="w-full max-w-md bg-white shadow-md rounded-md p-8">
+    <div class="flex-1 flex items-center justify-center">
+        <div class="w-full max-w-md bg-white shadow-md rounded-md p-8 mx-4">
+            {{-- Logo & Heading, tampil by default kecuali di-hide --}}
+            @if(!isset($hideHeader))
+                <div class="mb-6 text-center">
+                    <img src="{{ asset('assets/images/logo/logo.webp') }}" alt="Logo" class="h-22 w-20 mx-auto mb-2">
+                    <h1 class="text-xl font-semibold text-gray-800">{{ $heading ?? 'Selamat Datang' }}</h1>
+                </div>
+            @endif
+
             {{ $slot }}
         </div>
-    </main>
+    </div>
 </body>
 </body>
 

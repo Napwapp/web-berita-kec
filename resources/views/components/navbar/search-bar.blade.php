@@ -5,9 +5,9 @@
             <i class="fa-solid fa-magnifying-glass text-gray-500 text-sm"></i>
         </div>
         
-        <input type="text" id="search-news"
+        <x-text-input type="text" id="search-news"
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-2xl focus:ring-green-700 focus:border-green-700 block w-full ps-10 py-2.5 px-8"
-            placeholder="Berita apa yang ingin anda cari?" required>
+            placeholder="Berita apa yang ingin anda cari?" required />
     </div>
 
     <button type="submit"

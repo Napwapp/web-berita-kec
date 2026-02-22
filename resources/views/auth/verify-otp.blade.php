@@ -1,8 +1,11 @@
 <x-auth-layout title="Verifikasi OTP">
     <x-slot name="header">
         <x-flash-messages />    
-    </x-slot
+    </x-slot>
     
+    <!-- Sembunyikan logo dari layout -->
+    <x-slot name="hideHeader"></x-slot>
+
     <!-- Heading -->
     <div class="text-center mb-8">
         <h1 class="text-xl font-bold text-gray-800 mb-1">Verifikasi Kode OTP</h1>
