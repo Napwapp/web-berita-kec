@@ -1,7 +1,7 @@
 @props(['title' => 'Document'])
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="UTF-8">
