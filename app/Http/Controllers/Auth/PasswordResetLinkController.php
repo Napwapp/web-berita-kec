@@ -7,6 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\DB;
 
 class PasswordResetLinkController extends Controller
 {
@@ -34,6 +35,11 @@ class PasswordResetLinkController extends Controller
                 'email.email' => 'Format email tidak valid. Contoh: user@domain.com',
             ]
         );
+
+        // Hapus token reset password yang sudah ada untuk email tersebut agar tidak terjadi duplikasi token
+        DB::table('password_reset_tokens')
+            ->where('email', $request->email)
+            ->delete();
 
         // Kirim link reset password ke email pengguna
         $status = Password::sendResetLink(

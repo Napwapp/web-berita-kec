@@ -1,6 +1,7 @@
 @props([
     'href' => null,
-    'variant' => 'primary', // 'primary' atau 'secondary'
+    'variant' => 'primary',
+    'loadingText' => 'Loading...',
 ])
 
 @php
@@ -19,7 +20,17 @@
         {{ $slot }}
     </a>
 @else
-    <button {{ $attributes->merge(['type' => 'submit', 'class' => $class]) }}>
-        {{ $slot }}
+    <button
+        x-data="{ loading: false }"
+        x-init="$el.closest('form')?.addEventListener('submit', () => { loading = true })"
+        :disabled="loading"
+        {{ $attributes->merge(['type' => 'submit', 'class' => $class]) }}
+    >
+        <span x-show="!loading">{{ $slot }}</span>
+
+        <span x-show="loading" x-cloak class="inline-flex items-center gap-2">
+            <i class="fa-solid fa-spinner animate-spin"></i>
+            {{ $loadingText }}
+        </span>
     </button>
 @endif
