@@ -51,7 +51,7 @@ class OtpService
         if (now()->greaterThan($otpRecord->expired_at)) {
             return [
                 'status' => false,
-                'message' => 'Kode OTP sudah kedaluwarsa. Silakan kirim ulang OTP.'
+                'message' => 'Kode OTP sudah kedaluwarsa. Silakan minta untuk kirim ulang OTP.'
             ];
         }
 
