@@ -14,6 +14,6 @@ class Category extends Model
     // Kategori dapat memiliki banyak berita dan berita dapat memiliki banyak kategori.
     public function news()
     {
-        return $this->belongsToMany(News::class);
+        return $this->belongsToMany(News::class, 'category_news');
     }
 }

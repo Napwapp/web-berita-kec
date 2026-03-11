@@ -38,7 +38,7 @@ class GoogleController extends Controller
                     'email_verified_at' => now(),
                 ]);
             } else {
-                // Jika pengguna sudah ada, perbarui informasi Google ID dan avatar
+                // Jika pengguna sudah ada, perbarui informasi Google ID dan avataram
                 $user->update([
                     'google_id' => $googleUser->getId(),
                     'profile_picture' => $googleUser->getAvatar(),
@@ -48,6 +48,12 @@ class GoogleController extends Controller
 
             // Login pengguna
             Auth::login($user);
+
+            // Redirect role admin
+            if ($user->role === 'admin') {
+                return redirect('/admin')
+                    ->with('success', 'Selamat! Anda berhasil login sebagai admin.');
+            }
 
             return redirect()->intended('/')->with('success', 'Selamat! Anda berhasil login.');
         } catch (Exception $e) {

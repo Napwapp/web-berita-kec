@@ -31,7 +31,7 @@ class AuthenticatedSessionController extends Controller
         // Redirect berdasarkan role
         return redirect()->intended(
             $user->role === 'admin'
-            ? route('dashboard', absolute: false)
+            ? route('/admin', absolute: false)
             : '/'
         )->with('success', 'Selamat! Anda berhasil login.');
     }
