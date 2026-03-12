@@ -9,8 +9,10 @@
         "php": "^8.2",
         "blade-ui-kit/blade-heroicons": "^2.6",
         "blade-ui-kit/blade-icons": "^1.8",
+        "cloudinary-labs/cloudinary-laravel": "^3.0",
         "filament/filament": "^3.0",
         "laravel/framework": "^12.0",
+        "laravel/socialite": "^5.24",
         "laravel/tinker": "^2.10.1"
     },
     "require-dev": {

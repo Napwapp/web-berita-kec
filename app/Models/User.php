@@ -6,8 +6,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-
-class User extends Authenticatable
+use Illuminate\Support\Facades\Storage;
+use App\Notifications\ResetPasswordNotification;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
+class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
@@ -18,9 +21,13 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
+        'google_id',
         'name',
         'email',
         'password',
+        'role',
+        'profile_picture',
+        'email_verified_at',
     ];
 
     /**
@@ -44,5 +51,39 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    // Accessor untuk mendapatkan URL foto profil, baik dari Google atau lokal
+    public function getProfilePhotoAttribute()
+    {
+        if (!$this->profile_picture) {
+            // Tidak ada foto sama sekali, pakai default
+            return Storage::url('images/profile-pictures/default-profile.webp');
+        }
+
+        // Cek apakah URL eksternal (dari Google) atau path lokal
+        if (str_starts_with($this->profile_picture, 'http')) {
+            return $this->profile_picture;
+        }
+
+        return Storage::url($this->profile_picture);
+    }
+
+    // Satu pengguna (author) dapat memiliki banyak berita.
+    public function news()
+    {
+        return $this->hasMany(News::class, 'author_id');
+    }
+
+    // Override method untuk mengirim notifikasi reset password ke email dengan custom format
+    public function sendPasswordResetNotification($token): void
+    {
+        $this->notify(new ResetPasswordNotification($token));
+    }
+
+    // Menentukan apakah pengguna dapat mengakses panel admin
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->role === 'admin';
     }
 }

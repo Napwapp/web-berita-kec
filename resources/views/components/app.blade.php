@@ -1,7 +1,7 @@
 @props(['title' => 'Document'])
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="UTF-8">
@@ -9,7 +9,6 @@
     <title>{{$title}}</title>
 
     <x-link />
-    
 </head>
 
 <body class="bg-gray-50 text-gray-800">
@@ -18,13 +17,12 @@
         <x-navbar />
 
         <main class="mb-10">
-            <!-- Header -->
-            <x-header />
+            <x-flash-messages />
 
             <!-- Konten utama -->
-            <div class="bg-white rounded-lg shadow p-6">
+            <main class="bg-white rounded-lg shadow p-6">
                 {{$slot}}
-            </div>
+            </main>
         </main>
     </div>
 </body>
