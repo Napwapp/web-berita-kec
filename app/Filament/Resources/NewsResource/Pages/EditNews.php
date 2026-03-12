@@ -60,7 +60,8 @@ class EditNews extends EditRecord
 
         // Update current_version_id ke versi terbaru jika is_published nya true
         if ($isPublished) {
-            $news->update(['current_version_id' => $newNewsContent->id]);
+            // gunakan helper agar logic tetap konsisten
+            $newNewsContent->publish();
         }
 
         // Sinkronisasi kategori

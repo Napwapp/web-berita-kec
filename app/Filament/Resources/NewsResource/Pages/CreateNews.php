@@ -40,9 +40,9 @@ class CreateNews extends CreateRecord
             'published_at' => $isPublished ? now() : null,
         ]);
 
-        // Update current_version_id di tabel news apabila is_published nya true
+        // Jika berita langsung dipublikasi, gunakan helper terpusat
         if ($isPublished) {
-            $news->update(['current_version_id' => $newsContent->id]);
+            $newsContent->publish();
         }
 
         // Sinkronisasi kategori jika ada

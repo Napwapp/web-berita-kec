@@ -81,6 +81,17 @@ class NewsTable
             ])
 
             ->actions([
+                Tables\Actions\Action::make('publish')
+                    ->label('Publish')
+                    ->color('success')
+                    ->requiresConfirmation()
+
+                    // publish
+                    ->action(function (\App\Models\NewsContent $record) {
+                        $record->publish();
+                    })
+                    ->visible(fn($record) => !$record->is_published),
+
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
