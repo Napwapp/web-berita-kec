@@ -122,12 +122,17 @@ class NewsForm
                                 ->label('Gambar Thumbnail')
                                 ->image()
                                 ->required()
-                                ->disk('public')
-                                ->directory('news/thumbnails')
+                                ->disk('local')
+                                ->directory('temp-uploads/news-thumbnails')
+                                ->visibility('public')
                                 ->imageResizeMode('cover')
                                 ->imageCropAspectRatio('16:9')
-                                ->imageResizeTargetWidth('1280')
-                                ->imageResizeTargetHeight('720'),
+                                ->imageResizeTargetWidth(1280)
+                                ->imageResizeTargetHeight(720)
+                                ->getUploadedFileNameForStorageUsing(function ($file) {
+                                    $original = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                                    return 'news-' . now()->timestamp . '-' . str($original)->slug();
+                                }),
 
                             TextInput::make('thumbnail_description')
                                 ->label('Deskripsi Thumbnail (Opsional)')

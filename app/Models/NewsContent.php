@@ -33,7 +33,7 @@ class NewsContent extends Model
     public function publish(): self
     {
         // Update is_published dan published_at ketika publish
-        if (! $this->is_published) {
+        if (!$this->is_published) {
             $this->update([
                 'is_published' => true,
                 'published_at' => now(),
@@ -50,4 +50,5 @@ class NewsContent extends Model
 
         return $this;
     }
+
 }

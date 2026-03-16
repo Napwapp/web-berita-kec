@@ -4,6 +4,7 @@ namespace App\Filament\Resources\NewsResource\Pages;
 
 use App\Filament\Resources\NewsResource;
 use App\Models\NewsContent;
+use App\Services\CloudinaryService;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\Model;
@@ -30,18 +31,42 @@ class EditNews extends EditRecord
     // Buat newscontent versi baru nya
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
+        // Ambil news dan newsContent dari record yang sedang diedit
         $newsContent = $record;
         $news = $newsContent->news;
-        
+
+        // Hitung versi baru
         $newVersion = ($news->contents()->max('version') ?? 0) + 1;
         $isPublished = $data['is_published'] ?? false;
+
+        // Jika thumbnail diganti, upload ke cloudinary dan hapus thumbnail lama
+        $cloudinary = app(CloudinaryService::class);
 
         // Versioning slug
         $baseSlug = Str::slug($data['title']);
 
+        // Jika versi baru lebih dari 1, tambhakan -v{version}
         $slug = $newVersion > 1
             ? $baseSlug . '-v' . $newVersion
             : $baseSlug;
+
+        // Jika ada thumbnail baru
+        $isNewThumbnail = !empty($data['thumbnail'])
+            && !str_starts_with($data['thumbnail'], 'http');
+
+        if ($isNewThumbnail) {
+            // Upload thumbnail baru ke Cloudinary
+            $tmpPath = storage_path('app/livewire-tmp/' . $data['thumbnail']);
+            $thumbnailUrl = $cloudinary->upload($tmpPath, 'news/thumbnails');
+
+            // Hapus thumbnail lama dari Cloudinary jika ada
+            if ($newsContent->thumbnail) {
+                $cloudinary->deleteByUrl($newsContent->thumbnail);
+            }
+        } else {
+            // Pakai thumbnail dari record yang sedang diedit
+            $thumbnailUrl = $newsContent->thumbnail;
+        }
 
         // Buat versi baru di news_contents
         $newNewsContent = NewsContent::create([
@@ -49,7 +74,7 @@ class EditNews extends EditRecord
             'title' => $data['title'],
             'subtitle' => $data['subtitle'] ?? null,
             'slug' => $slug,
-            'thumbnail' => $data['thumbnail'],
+            'thumbnail' => $thumbnailUrl,
             'thumbnail_description' => $data['thumbnail_description'] ?? null,
             'excerpt' => $data['excerpt'] ?? null,
             'content' => $data['content'],

@@ -9,6 +9,8 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
+use Illuminate\Support\Facades\Storage;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class NewsTable
 {
@@ -18,7 +20,6 @@ class NewsTable
             ->columns([
                 ImageColumn::make('thumbnail')
                     ->label('Thumbnail')
-                    ->disk('public')
                     ->width(80)
                     ->height(50),
 

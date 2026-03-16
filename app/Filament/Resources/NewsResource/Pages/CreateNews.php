@@ -5,9 +5,11 @@ namespace App\Filament\Resources\NewsResource\Pages;
 use App\Filament\Resources\NewsResource;
 use App\Models\News;
 use App\Models\NewsContent;
+use App\Services\CloudinaryService;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class CreateNews extends CreateRecord
@@ -17,6 +19,20 @@ class CreateNews extends CreateRecord
     // Override method untuk menangani pembuatan record news dan news_content secara bersamaan
     protected function handleRecordCreation(array $data): Model
     {
+        // Panggil CloudinaryService
+        $cloudinary = app(CloudinaryService::class);
+
+        // Ambil path file thumbnail dari data form
+        $thumbnailPath = $data['thumbnail'] ?? null;
+        $thumbnailUrl = null;
+
+        // Simpan file temp ke local dan up ke cloudinary lalu hapus file temp
+        if ($thumbnailPath) {
+            $fullPath = Storage::disk('local')->path($thumbnailPath);
+            $thumbnailUrl = $cloudinary->upload($fullPath, 'news/thumbnails');
+            Storage::disk('local')->delete($thumbnailPath);
+        }
+
         // Record news dengan author_id yang diambil dari user yang sedang login
         $news = News::create([
             'author_id' => Auth::id(),
@@ -31,7 +47,7 @@ class CreateNews extends CreateRecord
             'title' => $data['title'],
             'subtitle' => $data['subtitle'] ?? null,
             'slug' => Str::slug($data['title']),
-            'thumbnail' => $data['thumbnail'],
+            'thumbnail' => $thumbnailUrl,
             'thumbnail_description' => $data['thumbnail_description'] ?? null,
             'excerpt' => $data['excerpt'] ?? null,
             'content' => $data['content'],
