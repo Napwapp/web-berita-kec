@@ -11,6 +11,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Illuminate\Support\Facades\Storage;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+use App\Services\CloudinaryService;
 
 class NewsTable
 {
@@ -94,12 +95,21 @@ class NewsTable
                     ->visible(fn($record) => !$record->is_published),
 
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->before(function ($record) {
+                        app(CloudinaryService::class)->deleteByUrl($record->thumbnail);
+                    }),
             ])
 
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->before(function ($records) {
+                            $cloudinaryService = app(CloudinaryService::class);
+                            foreach ($records as $record) {
+                                $cloudinaryService->deleteByUrl($record->thumbnail);
+                            }
+                        }),
                 ]),
             ])
 
