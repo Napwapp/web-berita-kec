@@ -9,6 +9,7 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
+use Filament\Tables\Actions\Action;
 use Illuminate\Support\Facades\Storage;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use App\Services\CloudinaryService;
@@ -44,14 +45,18 @@ class NewsTable
                     ->badge()
                     ->separator(','),
 
-                IconColumn::make('is_published')
-                    ->label('Dipublikasi')
-                    ->boolean(),
+                TextColumn::make('is_published')
+                    ->label('Status Publikasi')
+                    ->badge()
+                    ->icon(fn($state) => $state ? 'heroicon-o-check-circle' : 'heroicon-o-clock')
+                    ->color(fn($state) => $state ? 'success' : 'warning')
+                    ->formatStateUsing(fn($state) => $state ? 'Telah Dipublikasi' : 'Draft'),
 
                 TextColumn::make('published_at')
                     ->label('Tanggal Publikasi')
                     ->dateTime('d M Y')
-                    ->sortable(),
+                    ->sortable()
+                    ->placeholder('Belum dipublikasi'),
 
                 TextColumn::make('news.views')
                     ->label('Views')
@@ -83,7 +88,7 @@ class NewsTable
             ])
 
             ->actions([
-                Tables\Actions\Action::make('publish')
+                Action::make('publish')
                     ->label('Publish')
                     ->color('success')
                     ->requiresConfirmation()
