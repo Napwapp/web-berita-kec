@@ -9,6 +9,7 @@ use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class EditNews extends EditRecord
 {
@@ -39,7 +40,7 @@ class EditNews extends EditRecord
         $newVersion = ($news->contents()->max('version') ?? 0) + 1;
         $isPublished = $data['is_published'] ?? false;
 
-        // Jika thumbnail diganti, upload ke cloudinary dan hapus thumbnail lama
+        // Panggil method CLouidnaryService
         $cloudinary = app(CloudinaryService::class);
 
         // Versioning slug
@@ -51,13 +52,16 @@ class EditNews extends EditRecord
             : $baseSlug;
 
         // Jika ada thumbnail baru
-        $isNewThumbnail = !empty($data['thumbnail'])
-            && !str_starts_with($data['thumbnail'], 'http');
+        $thumbnailPath = $data['thumbnail'] ?? null;
+        $isNewThumbnail = !empty($data['thumbnail']) && !str_starts_with($data['thumbnail'], 'http');
 
         if ($isNewThumbnail) {
-            // Upload thumbnail baru ke Cloudinary
-            $tmpPath = storage_path('app/livewire-tmp/' . $data['thumbnail']);
-            $thumbnailUrl = $cloudinary->upload($tmpPath, 'news/thumbnails');
+            // Ambil full path
+            $fullPath = Storage::disk('local')->path($thumbnailPath);
+
+            // Upload thumbnail baru ke Cloudinary da hapus file temp nya
+            $thumbnailUrl = $cloudinary->upload($fullPath, 'news/thumbnails');
+            Storage::disk('local')->delete($thumbnailPath);
 
             // Hapus thumbnail lama dari Cloudinary jika ada
             if ($newsContent->thumbnail) {
@@ -83,17 +87,17 @@ class EditNews extends EditRecord
             'published_at' => $isPublished ? now() : null,
         ]);
 
-        // Update current_version_id ke versi terbaru jika is_published nya true
-        if ($isPublished) {
-            // gunakan helper agar logic tetap konsisten
-            $newNewsContent->publish();
-        }
-
         // Sinkronisasi kategori
         if (isset($data['categories'])) {
             $news->categories()->sync($data['categories']);
         } else {
             $news->categories()->detach();
+        }
+
+        // Update current_version_id ke versi terbaru jika is_published nya true
+        if ($isPublished) {
+            // gunakan helper agar logic tetap konsisten
+            $newNewsContent->publish();
         }
 
         return $newNewsContent;

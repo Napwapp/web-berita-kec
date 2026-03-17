@@ -14,6 +14,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Placeholder;
 use App\Models\Category;
 use Illuminate\Support\Str;
 
@@ -118,11 +119,21 @@ class NewsForm
 
                     Section::make('Thumbnail')
                         ->schema([
+                            Placeholder::make('current_thumbnail')
+                                ->label('Thumbnail Saat Ini')
+                                ->content(
+                                    fn($record) => $record?->thumbnail
+                                    ? new \Illuminate\Support\HtmlString('<img src="' . $record->thumbnail . '" style="max-width:320px; border-radius:8px;">')
+                                    : 'Belum ada thumbnail'
+                                )
+                                ->visible(fn($record) => $record?->thumbnail !== null),
+
+
                             FileUpload::make('thumbnail')
-                                ->label('Gambar Thumbnail')
+                                ->label(fn($record) => $record ? 'Ganti Thumbnail (Opsional)' : 'Gambar Thumbnail')
                                 ->image()
-                                ->required()
-                                ->disk('local')
+                                ->required(fn($record) => $record === null)
+                                ->disk('local') 
                                 ->directory('temp-uploads/news-thumbnails')
                                 ->visibility('public')
                                 ->imageResizeMode('cover')
