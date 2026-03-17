@@ -136,10 +136,17 @@ class NewsForm
                                 ->disk('local') 
                                 ->directory('temp-uploads/news-thumbnails')
                                 ->visibility('public')
+
+                                // Optimasi gambar
+                                ->optimize('webp')
                                 ->imageResizeMode('cover')
                                 ->imageCropAspectRatio('16:9')
                                 ->imageResizeTargetWidth(1280)
                                 ->imageResizeTargetHeight(720)
+                                ->imageResizeUpscale(false)
+                                ->maxSize(3072)
+                                ->acceptedFileTypes(['image/jpg', 'image/jpeg', 'image/png', 'image/webp'])
+                                ->helperText('Format JPG/JPEG, PNG, atau WebP · Rasio 16:9 · Maksimal ukuran file 3 MB')
                                 ->getUploadedFileNameForStorageUsing(function ($file) {
                                     $original = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
                                     return 'news-' . now()->timestamp . '-' . str($original)->slug();
