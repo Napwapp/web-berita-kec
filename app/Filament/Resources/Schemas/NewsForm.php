@@ -51,8 +51,17 @@ class NewsForm
                             RichEditor::make('content')
                                 ->label('Isi Berita')
                                 ->required()
-                                ->fileAttachmentsDisk('public')
-                                ->fileAttachmentsDirectory('news/attachments')
+                                ->fileAttachmentsDisk('cloudinary')
+                                ->fileAttachmentsDirectory('news/content-attachments')
+                                ->fileAttachmentsVisibility('public')
+                                // ->fileAttachmentsConfiguration(function (FileUpload $component) {
+                                //     return $component
+                                //         ->optimize('webp')
+                                //         ->imageResizeMode('contain')
+                                //         ->imageResizeTargetWidth(1200)
+                                //         ->imageResizeUpscale(false)
+                                //         ->maxSize(5120);
+                                // })
                                 ->columnSpanFull(),
 
                             Textarea::make('excerpt')
@@ -133,7 +142,7 @@ class NewsForm
                                 ->label(fn($record) => $record ? 'Ganti Thumbnail (Opsional)' : 'Gambar Thumbnail')
                                 ->image()
                                 ->required(fn($record) => $record === null)
-                                ->disk('local') 
+                                ->disk('local')
                                 ->directory('temp-uploads/news-thumbnails')
                                 ->visibility('public')
 

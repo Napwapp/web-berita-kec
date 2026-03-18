@@ -55,7 +55,7 @@ class GoogleController extends Controller
                     ->with('success', 'Selamat! Anda berhasil login sebagai admin.');
             }
 
-            return redirect()->intended('/')->with('success', 'Selamat! Anda berhasil login.');
+            return redirect('/')->with('success', 'Selamat! Anda berhasil login.');
         } catch (Exception $e) {
             return redirect('/login')->withErrors('Login dengan Google gagal. Silakan coba lagi.');
         }

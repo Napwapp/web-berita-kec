@@ -58,4 +58,30 @@ class CloudinaryService
             Cloudinary::uploadApi()->destroy($publicId);
         }
     }
+
+    /**
+     * Hapus semua gambar Cloudinary yang ada di dalam HTML content (RichEditor).
+     * @param string|null $content HTML content dari RichEditor
+     */
+    public function deleteContentImages(?string $content): void
+    {
+        if (!$content)
+            return;
+
+        // Extract semua URL cloudinary dari attribute src dan href di dalam content
+        $cloudinaryDomain = 'res.cloudinary.com';
+        $pattern = '/https?:\/\/' . preg_quote($cloudinaryDomain, '/') . '\/[^\s"\']+/';
+        preg_match_all($pattern, $content, $matches);
+
+        if (empty($matches[0]))
+            return;
+
+        // Hapus duplikat (src dan href bisa punya URL yang sama)
+        $urls = array_unique($matches[0]);
+
+        // Hapus semua gambar yang ditemukan
+        foreach ($urls as $url) {
+            $this->deleteByUrl($url);
+        }
+    }
 }
