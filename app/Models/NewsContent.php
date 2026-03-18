@@ -50,5 +50,4 @@ class NewsContent extends Model
 
         return $this;
     }
-
 }

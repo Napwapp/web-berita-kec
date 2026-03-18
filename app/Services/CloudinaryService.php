@@ -43,45 +43,86 @@ class CloudinaryService
      */
     public function deleteByUrl(?string $url): void
     {
-        // Jika tidak ada url, tidak perlu melakukan apa-apa
-        if (!$url)
-            return;
+        if (!$url) return;
 
-        // Extract public_id dari full URL
-        // Contoh URL: https://res.cloudinary.com/cloud_name/image/upload/v123456/news/thumbnails/abc.jpg
-        // Public ID  : news/thumbnails/abc
+        // Skip URL yang mengandung transformation parameter
+        if (!preg_match('/\/upload\/v\d+\//', $url)) {
+            return;
+        }
+
+        // Ekstrak public_id dari URL
         $pattern = '/\/upload\/(?:v\d+\/)?(.+?)(?:\.[a-zA-Z]+)?$/';
 
-        // Jika URL cocok dengan pola, hapus gambar menggunakan public_id
+        // Jika cocok, hapus gambar menggunakan public_id
         if (preg_match($pattern, $url, $matches)) {
             $publicId = $matches[1];
             Cloudinary::uploadApi()->destroy($publicId);
         }
     }
 
+    // Method hapus data di cloudinarynya dari konten gambar richeditor 
     /**
-     * Hapus semua gambar Cloudinary yang ada di dalam HTML content (RichEditor).
-     * @param string|null $content HTML content dari RichEditor
+     * @param string|null $content
      */
     public function deleteContentImages(?string $content): void
     {
         if (!$content)
             return;
 
-        // Extract semua URL cloudinary dari attribute src dan href di dalam content
-        $cloudinaryDomain = 'res.cloudinary.com';
-        $pattern = '/https?:\/\/' . preg_quote($cloudinaryDomain, '/') . '\/[^\s"\']+/';
-        preg_match_all($pattern, $content, $matches);
+        // Decode HTML entities dulu (&quot; -> ", &amp; -> &, dst)
+        $decoded = html_entity_decode($content, ENT_QUOTES | ENT_HTML5, 'UTF-8');
 
+        // Cari semua URL gambar Cloudinary di dalam content
+        $cloudinaryDomain = 'res.cloudinary.com';
+        $pattern = '/https?:\/\/' . preg_quote($cloudinaryDomain, '/') . '\/[^\s"\'<>]+/';
+        preg_match_all($pattern, $decoded, $matches);
         if (empty($matches[0]))
             return;
 
-        // Hapus duplikat (src dan href bisa punya URL yang sama)
+        // Hapus duplikat
         $urls = array_unique($matches[0]);
 
-        // Hapus semua gambar yang ditemukan
         foreach ($urls as $url) {
             $this->deleteByUrl($url);
         }
+    }
+
+    // Method optimize gambar pada konten berita
+    public function optimizeContentImageUrl(string $url): string
+    {
+        // Hanya proses URL cloudinary
+        if (!str_contains($url, 'res.cloudinary.com')) {
+            return $url;
+        }
+
+        // Transform!
+        // f_auto   : format otomatis (WebP/AVIF tergantung browser)
+        // q_auto   : kualitas otomatis (Cloudinary tentukan optimal)
+        // w_1200   : max width 1200px (cukup untuk konten artikel)
+        // c_limit  : hanya resize jika lebih besar (tidak upscale)
+        $transformation = 'f_auto,q_auto,w_1200,c_limit';
+
+        // Insert transformation setelah /upload/
+        return preg_replace(
+            '/\/upload\/(?:v\d+\/)?/',
+            '/upload/' . $transformation . '/',
+            $url,
+            1
+        );
+    }
+    // Optimize semua gambar di dalam konten berita
+    public function optimizeContentImages(?string $content): ?string
+    {
+        if (!$content)
+            return $content;
+
+        // Cari semua url cloudinary didalam content
+        $cloudinaryDomain = 'res.cloudinary.com';
+        $pattern = '/(https?:\/\/' . preg_quote($cloudinaryDomain, '/') . '\/[^\s"\']+)/';
+
+        // Replace URL dengan versi yang sudah dioptimasi
+        return preg_replace_callback($pattern, function ($matches) {
+            return $this->optimizeContentImageUrl($matches[1]);
+        }, $content);
     }
 }

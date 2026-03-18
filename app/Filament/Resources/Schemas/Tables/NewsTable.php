@@ -101,27 +101,11 @@ class NewsTable
 
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make()
-                    ->before(function ($record) {
-                        $cloudinaryService = app(CloudinaryService::class);
-
-                        // Hapus thumbnail & img pada content berita yang diupload ke cloudinary
-                        $cloudinaryService->deleteByUrl($record->thumbnail);
-                        $cloudinaryService->deleteContentImages($record->content);
-                    }),
             ])
 
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make()
-                        ->before(function ($records) {
-                            $cloudinaryService = app(CloudinaryService::class);
-
-                            foreach ($records as $record) {
-                                // Hapus thumbnail & img pada content berita yang diupload ke cloudinary
-                                $cloudinaryService->deleteByUrl($record->thumbnail);
-                                $cloudinaryService->deleteContentImages($record->content);
-                            }
-                        }),
                 ]),
             ])
 

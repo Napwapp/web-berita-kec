@@ -103,6 +103,15 @@ class EditNews extends EditRecord
         return $newNewsContent;
     }
 
+    // Override method untuk optimasi gambar content berita sebelum update data
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        $data['content'] = app(CloudinaryService::class)
+            ->optimizeContentImages($data['content']);
+
+        return $data;
+    }
+
     protected function getHeaderActions(): array
     {
         return [

@@ -69,6 +69,15 @@ class CreateNews extends CreateRecord
         return $newsContent;
     }
 
+    // Override method untuk optimasi gambar content berita sebelum create data
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        $data['content'] = app(CloudinaryService::class)
+            ->optimizeContentImages($data['content']);
+
+        return $data;
+    }
+
     // Redirect setelah berhasil
     protected function getRedirectUrl(): string
     {
