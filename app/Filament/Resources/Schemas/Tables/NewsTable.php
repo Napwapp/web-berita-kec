@@ -9,6 +9,10 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
+use Filament\Tables\Actions\Action;
+use Illuminate\Support\Facades\Storage;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+use App\Services\CloudinaryService;
 
 class NewsTable
 {
@@ -18,7 +22,6 @@ class NewsTable
             ->columns([
                 ImageColumn::make('thumbnail')
                     ->label('Thumbnail')
-                    ->disk('public')
                     ->width(80)
                     ->height(50),
 
@@ -40,16 +43,21 @@ class NewsTable
                 TextColumn::make('news.categories.name')
                     ->label('Kategori')
                     ->badge()
-                    ->separator(','),
+                    ->separator(',')
+                    ->placeholder('-'),
 
-                IconColumn::make('is_published')
-                    ->label('Dipublikasi')
-                    ->boolean(),
+                TextColumn::make('is_published')
+                    ->label('Status Publikasi')
+                    ->badge()
+                    ->icon(fn($state) => $state ? 'heroicon-o-check-circle' : 'heroicon-o-clock')
+                    ->color(fn($state) => $state ? 'success' : 'warning')
+                    ->formatStateUsing(fn($state) => $state ? 'Telah Dipublikasi' : 'Draft'),
 
                 TextColumn::make('published_at')
                     ->label('Tanggal Publikasi')
                     ->dateTime('d M Y')
-                    ->sortable(),
+                    ->sortable()
+                    ->placeholder('Belum dipublikasi'),
 
                 TextColumn::make('news.views')
                     ->label('Views')
@@ -81,13 +89,24 @@ class NewsTable
             ])
 
             ->actions([
+                Action::make('publish')
+                    ->label('Publish')
+                    ->color('success')
+                    ->requiresConfirmation()
+
+                    // publish
+                    ->action(function (\App\Models\NewsContent $record) {
+                        $record->publish();
+                    })
+                    ->visible(fn($record) => !$record->is_published),
+
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
             ])
 
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
                 ]),
             ])
 

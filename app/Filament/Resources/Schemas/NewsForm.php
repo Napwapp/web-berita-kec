@@ -14,6 +14,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Placeholder;
 use App\Models\Category;
 use Illuminate\Support\Str;
 
@@ -50,8 +51,17 @@ class NewsForm
                             RichEditor::make('content')
                                 ->label('Isi Berita')
                                 ->required()
-                                ->fileAttachmentsDisk('public')
-                                ->fileAttachmentsDirectory('news/attachments')
+                                ->fileAttachmentsDisk('cloudinary')
+                                ->fileAttachmentsDirectory('news/content-attachments')
+                                ->fileAttachmentsVisibility('public')
+                                // ->fileAttachmentsConfiguration(function (FileUpload $component) {
+                                //     return $component
+                                //         ->optimize('webp')
+                                //         ->imageResizeMode('contain')
+                                //         ->imageResizeTargetWidth(1200)
+                                //         ->imageResizeUpscale(false)
+                                //         ->maxSize(5120);
+                                // })
                                 ->columnSpanFull(),
 
                             Textarea::make('excerpt')
@@ -118,16 +128,38 @@ class NewsForm
 
                     Section::make('Thumbnail')
                         ->schema([
+                            Placeholder::make('current_thumbnail')
+                                ->label('Thumbnail Saat Ini')
+                                ->content(
+                                    fn($record) => $record?->thumbnail
+                                    ? new \Illuminate\Support\HtmlString('<img src="' . $record->thumbnail . '" style="max-width:320px; border-radius:8px;">')
+                                    : 'Belum ada thumbnail'
+                                )
+                                ->visible(fn($record) => $record?->thumbnail !== null),
+
+
                             FileUpload::make('thumbnail')
-                                ->label('Gambar Thumbnail')
+                                ->label(fn($record) => $record ? 'Ganti Thumbnail (Opsional)' : 'Gambar Thumbnail')
                                 ->image()
-                                ->required()
-                                ->disk('public')
-                                ->directory('news/thumbnails')
+                                ->required(fn($record) => $record === null)
+                                ->disk('local')
+                                ->directory('temp-uploads/news-thumbnails')
+                                ->visibility('public')
+
+                                // Optimasi gambar
+                                ->optimize('webp')
                                 ->imageResizeMode('cover')
                                 ->imageCropAspectRatio('16:9')
-                                ->imageResizeTargetWidth('1280')
-                                ->imageResizeTargetHeight('720'),
+                                ->imageResizeTargetWidth(1280)
+                                ->imageResizeTargetHeight(720)
+                                ->imageResizeUpscale(false)
+                                ->maxSize(3072)
+                                ->acceptedFileTypes(['image/jpg', 'image/jpeg', 'image/png', 'image/webp'])
+                                ->helperText('Format JPG/JPEG, PNG, atau WebP · Rasio 16:9 · Maksimal ukuran file 3 MB')
+                                ->getUploadedFileNameForStorageUsing(function ($file) {
+                                    $original = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                                    return 'news-' . now()->timestamp . '-' . str($original)->slug();
+                                }),
 
                             TextInput::make('thumbnail_description')
                                 ->label('Deskripsi Thumbnail (Opsional)')

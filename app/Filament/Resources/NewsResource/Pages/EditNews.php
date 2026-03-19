@@ -4,10 +4,12 @@ namespace App\Filament\Resources\NewsResource\Pages;
 
 use App\Filament\Resources\NewsResource;
 use App\Models\NewsContent;
+use App\Services\CloudinaryService;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class EditNews extends EditRecord
 {
@@ -30,18 +32,45 @@ class EditNews extends EditRecord
     // Buat newscontent versi baru nya
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
+        // Ambil news dan newsContent dari record yang sedang diedit
         $newsContent = $record;
         $news = $newsContent->news;
-        
+
+        // Hitung versi baru
         $newVersion = ($news->contents()->max('version') ?? 0) + 1;
         $isPublished = $data['is_published'] ?? false;
+
+        // Panggil method CLouidnaryService
+        $cloudinary = app(CloudinaryService::class);
 
         // Versioning slug
         $baseSlug = Str::slug($data['title']);
 
+        // Jika versi baru lebih dari 1, tambhakan -v{version}
         $slug = $newVersion > 1
             ? $baseSlug . '-v' . $newVersion
             : $baseSlug;
+
+        // Jika ada thumbnail baru
+        $thumbnailPath = $data['thumbnail'] ?? null;
+        $isNewThumbnail = !empty($data['thumbnail']) && !str_starts_with($data['thumbnail'], 'http');
+
+        if ($isNewThumbnail) {
+            // Ambil full path
+            $fullPath = Storage::disk('local')->path($thumbnailPath);
+
+            // Upload thumbnail baru ke Cloudinary da hapus file temp nya
+            $thumbnailUrl = $cloudinary->upload($fullPath, 'news/thumbnails');
+            Storage::disk('local')->delete($thumbnailPath);
+
+            // Hapus thumbnail lama dari Cloudinary jika ada
+            if ($newsContent->thumbnail) {
+                $cloudinary->deleteByUrl($newsContent->thumbnail);
+            }
+        } else {
+            // Pakai thumbnail dari record yang sedang diedit
+            $thumbnailUrl = $newsContent->thumbnail;
+        }
 
         // Buat versi baru di news_contents
         $newNewsContent = NewsContent::create([
@@ -49,7 +78,7 @@ class EditNews extends EditRecord
             'title' => $data['title'],
             'subtitle' => $data['subtitle'] ?? null,
             'slug' => $slug,
-            'thumbnail' => $data['thumbnail'],
+            'thumbnail' => $thumbnailUrl,
             'thumbnail_description' => $data['thumbnail_description'] ?? null,
             'excerpt' => $data['excerpt'] ?? null,
             'content' => $data['content'],
@@ -58,11 +87,6 @@ class EditNews extends EditRecord
             'published_at' => $isPublished ? now() : null,
         ]);
 
-        // Update current_version_id ke versi terbaru jika is_published nya true
-        if ($isPublished) {
-            $news->update(['current_version_id' => $newNewsContent->id]);
-        }
-
         // Sinkronisasi kategori
         if (isset($data['categories'])) {
             $news->categories()->sync($data['categories']);
@@ -70,7 +94,22 @@ class EditNews extends EditRecord
             $news->categories()->detach();
         }
 
+        // Update current_version_id ke versi terbaru jika is_published nya true
+        if ($isPublished) {
+            // gunakan helper agar logic tetap konsisten
+            $newNewsContent->publish();
+        }
+
         return $newNewsContent;
+    }
+
+    // Override method untuk optimasi gambar content berita sebelum update data
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        $data['content'] = app(CloudinaryService::class)
+            ->optimizeContentImages($data['content']);
+
+        return $data;
     }
 
     protected function getHeaderActions(): array
