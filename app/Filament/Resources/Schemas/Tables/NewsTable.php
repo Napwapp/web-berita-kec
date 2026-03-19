@@ -43,7 +43,8 @@ class NewsTable
                 TextColumn::make('news.categories.name')
                     ->label('Kategori')
                     ->badge()
-                    ->separator(','),
+                    ->separator(',')
+                    ->placeholder('-'),
 
                 TextColumn::make('is_published')
                     ->label('Status Publikasi')
