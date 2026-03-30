@@ -21,3 +21,6 @@ body {
 button:active {
     transform : scale(0.98);
 }
+
+
+[x-cloak] { display: none !important; }

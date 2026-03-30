@@ -13,16 +13,60 @@
         </div>
     </div>
 
-    <div class="news-filter overflow-x-auto">
-        <div class="flex w-full items-center">
-            <x-navbar.nav-link href="/" :active="request()->routeIs('home')">Beranda</x-navbar.nav-link>
-            <x-navbar.nav-link href="#">Terpopuler</x-navbar.nav-link>
-            <x-navbar.nav-link href="#">Pemerintahan</x-navbar.nav-link>
-            <x-navbar.nav-link href="#">Banjir</x-navbar.nav-link>
-            <x-navbar.nav-link href="#">Kecelakaan</x-navbar.nav-link>
-            <x-navbar.nav-link href="#">kegiatan</x-navbar.nav-link>
-            <x-navbar.nav-link href="#">Mulyasari</x-navbar.nav-link>
-            <x-navbar.nav-link href="#">Lainnya</x-navbar.nav-link>
+    <div x-data="{ open: false }">
+        <div class="news-filter overflow-x-auto">
+            <div class="flex items-center w-full">
+                <!-- Kiri -->
+                <div class="flex items-center gap-2">
+                    <x-navbar.nav-link href="/" :active="request()->routeIs('home')">Beranda</x-navbar.nav-link>
+                    <x-navbar.nav-link href="#">Terpopuler</x-navbar.nav-link>
+                </div>
+
+                <!-- Tengah -->
+                <div class="flex items-center gap-2">
+                    @foreach($latestCategories as $latestCategory)
+                        <x-navbar.nav-link href="{{ route('kategori.show', $latestCategory->slug) }}"
+                            :active="request()->route('slug') === $latestCategory->slug">
+                            {{ $latestCategory->name }}
+                        </x-navbar.nav-link>
+                    @endforeach
+                </div>
+
+                <!-- Kanan -->
+                <div class="ml-auto">
+                    <button @click="open = !open"
+                        class="px-4 py-2 font-semibold inline-flex items-center gap-2 whitespace-nowrap hover:text-green-600 transition-colors"
+                        :class="{ 'text-green-600': open }">
+                        Selengkapnya
+                        <i class="fa-solid fa-chevron-down transition" :class="{ 'rotate-180': open }"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Dropdown -->
+            <div x-show="open" x-cloak x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0"
+                x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0 -translate-y-2" @click.outside="open = false"
+                class="w-full bg-white border-t shadow">
+
+                <div class="flex flex-col gap-2 p-6 mx-auto">
+                    <h2 class="text-lg font-bold text-gray-700">
+                        Semua Kategori
+                    </h2>
+
+                    <div class="flex flex-wrap gap-2">
+                        @foreach($categories as $category)
+                            <a href="{{ route('kategori.show', $category->slug) }}" class="px-3 py-1 text-sm border rounded
+                                {{ request()->routeIs('kategori.show') && request()->route('slug') === $category->slug
+                                        ? 'bg-green-200 text-green-600 border-green-600 font-semibold'
+                                        : 'bg-green-50 text-green-700 border-green-600 hover:bg-green-100' }}">
+                                {{ $category->name }}
+                            </a>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </nav>
