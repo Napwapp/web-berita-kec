@@ -15,11 +15,13 @@ return new class extends Migration {
             $table->foreignId('author_id')->constrained('users')->cascadeOnDelete();
             $table->unsignedInteger('likes')->default(0);
             $table->unsignedInteger('views')->default(0);
+            $table->timestamp('pinned_at')->nullable();
+            $table->timestamp('pin_expired_at')->nullable();
             $table->timestamps();
         });
     }
 
-    /**
+    /*
      * Reverse the migrations.
      */
     public function down(): void

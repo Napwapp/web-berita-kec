@@ -21,7 +21,7 @@ class NewsResource extends Resource
     protected static ?string $navigationLabel = 'Berita';
     protected static ?string $modelLabel = 'Berita';
     protected static ?string $pluralModelLabel = 'Berita';
-    protected static ?string $navigationGroup = 'Berita';
+    protected static ?string $navigationGroup = 'Kelola Berita';
     protected static ?int $navigationSort = 1;
 
     // Form tambah berita & kategori

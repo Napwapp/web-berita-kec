@@ -12,7 +12,7 @@ class NavbarComposer
     {
         $view->with([
             'categories' => Category::orderBy('name')->get(),
-            'latestCategories' => Category::latest()->take(3)->get(),
+            'latestCategories' => Category::latest()->take(4)->get(),
         ]);
     }
 }

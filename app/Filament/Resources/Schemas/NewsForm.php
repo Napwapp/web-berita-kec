@@ -54,14 +54,6 @@ class NewsForm
                                 ->fileAttachmentsDisk('cloudinary')
                                 ->fileAttachmentsDirectory('news/content-attachments')
                                 ->fileAttachmentsVisibility('public')
-                                // ->fileAttachmentsConfiguration(function (FileUpload $component) {
-                                //     return $component
-                                //         ->optimize('webp')
-                                //         ->imageResizeMode('contain')
-                                //         ->imageResizeTargetWidth(1200)
-                                //         ->imageResizeUpscale(false)
-                                //         ->maxSize(5120);
-                                // })
                                 ->columnSpanFull(),
 
                             Textarea::make('excerpt')

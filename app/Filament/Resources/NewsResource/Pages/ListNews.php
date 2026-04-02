@@ -16,4 +16,7 @@ class ListNews extends ListRecords
             Actions\CreateAction::make()->label('Tulis Berita'),
         ];
     }
+
+    // 
+    
 }

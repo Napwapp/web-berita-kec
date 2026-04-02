@@ -18,12 +18,11 @@ use Illuminate\Support\Str;
 class CategoryResource extends Resource
 {
     protected static ?string $model = Category::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationLabel = 'Kategori Berita';
     protected static ?string $modelLabel = 'Kategori Berita';
     protected static ?string $pluralModelLabel = 'Kategori Berita';
-    protected static ?string $navigationGroup = 'Berita';
+    protected static ?string $navigationGroup = 'Kelola Berita';
     protected static ?int $navigationSort = 2;
 
 
@@ -41,6 +40,7 @@ class CategoryResource extends Resource
                     }),
             ]);
     }
+    
 
     public static function table(Table $table): Table
     {
