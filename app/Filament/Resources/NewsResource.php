@@ -17,7 +17,7 @@ use App\Filament\Resources\Schemas\Tables\NewsTable;
 class NewsResource extends Resource
 {
     protected static ?string $model = NewsContent::class;
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-newspaper';
     protected static ?string $navigationLabel = 'Berita';
     protected static ?string $modelLabel = 'Berita';
     protected static ?string $pluralModelLabel = 'Berita';

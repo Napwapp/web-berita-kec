@@ -44,10 +44,9 @@
             </div>
 
             <!-- Dropdown -->
-            <div x-show="open" x-cloak x-transition:enter="transition ease-out duration-300"
-                x-transition:enter-start="opacity-0 -translate-y-2" x-transition:enter-end="opacity-100 translate-y-0"
-                x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100"
-                x-transition:leave-end="opacity-0 -translate-y-2" @click.outside="open = false"
+            <div x-show="open" 
+                x-cloak
+                @click.outside="open = false"
                 class="w-full bg-white border-t shadow">
 
                 <div class="flex flex-col gap-2 p-6 mx-auto">

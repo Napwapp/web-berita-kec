@@ -26,16 +26,21 @@ class CreateNews extends CreateRecord
         $thumbnailPath = $data['thumbnail'] ?? null;
         $thumbnailUrl = null;
 
+        // slug
+        $slug = Str::slug($data['title']);
+
         // Simpan file temp ke local dan up ke cloudinary lalu hapus file temp
         if ($thumbnailPath) {
             $fullPath = Storage::disk('local')->path($thumbnailPath);
             $thumbnailUrl = $cloudinary->upload($fullPath, 'news/thumbnails');
             Storage::disk('local')->delete($thumbnailPath);
         }
+        
 
         // Record news dengan author_id yang diambil dari user yang sedang login
         $news = News::create([
             'author_id' => Auth::id(),
+            'slug' => $slug,
         ]);
 
         // Simpan data is_published
@@ -46,7 +51,6 @@ class CreateNews extends CreateRecord
             'news_id' => $news->id,
             'title' => $data['title'],
             'subtitle' => $data['subtitle'] ?? null,
-            'slug' => Str::slug($data['title']),
             'thumbnail' => $thumbnailUrl,
             'thumbnail_description' => $data['thumbnail_description'] ?? null,
             'excerpt' => $data['excerpt'] ?? null,

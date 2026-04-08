@@ -8,6 +8,7 @@ class News extends Model
 {
     protected $fillable = [
         'author_id',
+        'slug',
         'current_version_id',
         'likes',
         'views',
@@ -37,6 +38,11 @@ class News extends Model
     public function categories()
     {
         return $this->belongsToMany(Category::class, 'category_news');
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
     }
 
     // Method untuk pin berita

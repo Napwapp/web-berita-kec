@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth;
 // user
 Route::get('/', [Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/kategori/{slug}', [Controllers\CategoryNewsController::class, 'show'])->name('kategori.show');
+Route::get('/news/{news}', [Controllers\NewsController::class, 'show'])->name('news.show');
 
 // filament
 Route::middleware(['admin'])->group(function () {

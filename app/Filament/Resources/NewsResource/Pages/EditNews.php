@@ -43,14 +43,6 @@ class EditNews extends EditRecord
         // Panggil method CLouidnaryService
         $cloudinary = app(CloudinaryService::class);
 
-        // Versioning slug
-        $baseSlug = Str::slug($data['title']);
-
-        // Jika versi baru lebih dari 1, tambhakan -v{version}
-        $slug = $newVersion > 1
-            ? $baseSlug . '-v' . $newVersion
-            : $baseSlug;
-
         // Jika ada thumbnail baru
         $thumbnailPath = $data['thumbnail'] ?? null;
         $isNewThumbnail = !empty($data['thumbnail']) && !str_starts_with($data['thumbnail'], 'http');
@@ -77,7 +69,6 @@ class EditNews extends EditRecord
             'news_id' => $news->id,
             'title' => $data['title'],
             'subtitle' => $data['subtitle'] ?? null,
-            'slug' => $slug,
             'thumbnail' => $thumbnailUrl,
             'thumbnail_description' => $data['thumbnail_description'] ?? null,
             'excerpt' => $data['excerpt'] ?? null,
