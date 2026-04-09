@@ -23,7 +23,7 @@
                 </div>
 
                 <!-- Tengah -->
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2 flex-1 justify-center">
                     @foreach($latestCategories as $latestCategory)
                         <x-navbar.nav-link href="{{ route('kategori.show', $latestCategory->slug) }}"
                             :active="request()->route('slug') === $latestCategory->slug">
