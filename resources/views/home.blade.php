@@ -10,8 +10,6 @@
         </div>
     </div>
 
-    <x-divider />
-
     <!-- Berita terbaru -->
     <section class="latest-news mt-2" id="latest-news">
         <x-home.news.latest-news :latestNews="$moreLatestNews" />
