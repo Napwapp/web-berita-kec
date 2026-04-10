@@ -19,7 +19,8 @@
                 <!-- Kiri -->
                 <div class="flex items-center gap-2">
                     <x-navbar.nav-link href="/" :active="request()->routeIs('home')">Beranda</x-navbar.nav-link>
-                    <x-navbar.nav-link href="#">Terpopuler</x-navbar.nav-link>
+                    <x-navbar.nav-link href="{{ route('news.index') }}" :active="request()->routeIs('news.index')">Berita</x-navbar.nav-link>
+                    <x-navbar.nav-link href="{{ route('struktur-organisasi') }}" :active="request()->routeIs('struktur-organisasi')">Struktur Organisasi</x-navbar.nav-link>
                 </div>
 
                 <!-- Tengah -->

@@ -13,10 +13,9 @@ return new class extends Migration {
         Schema::create('news_contents', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('subtitle')->nullable();
             $table->string('thumbnail');
             $table->string('thumbnail_description', 2000)->nullable();
-            $table->text('excerpt')->nullable();
+            $table->string('excerpt', 250)->nullable();
             $table->longText('content');
             $table->unsignedInteger('version');
             $table->boolean('is_published')->default(false);

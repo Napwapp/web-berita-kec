@@ -50,7 +50,6 @@ class CreateNews extends CreateRecord
         $newsContent = NewsContent::create([
             'news_id' => $news->id,
             'title' => $data['title'],
-            'subtitle' => $data['subtitle'] ?? null,
             'thumbnail' => $thumbnailUrl,
             'thumbnail_description' => $data['thumbnail_description'] ?? null,
             'excerpt' => $data['excerpt'] ?? null,

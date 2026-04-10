@@ -39,11 +39,6 @@ class NewsForm
                                         return;
                                     $set('slug', Str::slug($state));
                                 }),
-
-                            TextInput::make('subtitle')
-                                ->label('Sub Judul (Opsional)')
-                                ->nullable()
-                                ->maxLength(255),
                         ]),
 
                     Section::make('Konten')
@@ -60,8 +55,8 @@ class NewsForm
                                 ->label('Ringkasan Berita (Opsional)')
                                 ->nullable()
                                 ->rows(3)
-                                ->maxLength(500)
-                                ->helperText('Ringkasan singkat berita (opsional).'),
+                                ->maxLength(250)
+                                ->helperText('Ringkasan singkat berita (opsional) Maximal 250 Karakter.'),
                         ]),
                 ])
                 ->columnSpan(['lg' => 2]),

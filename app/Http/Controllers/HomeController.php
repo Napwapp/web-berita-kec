@@ -10,10 +10,17 @@ use App\Actions\Home\GetPopularNewsAction;
 
 class HomeController extends Controller
 {
-    public function index( GetHeroNewsSectionAction $heroNewsSection, GetPopularNewsAction $popularNews, ) 
+    public function index(GetHeroNewsSectionAction $heroNewsSection, GetPopularNewsAction $popularNews, )
     {
-        $categories = Category::all();        
+        $categories = Category::all();
         $popularNews = $popularNews->handle();
+
+        $moreLatestNews = News::query()
+            ->whereNotNull('current_version_id')
+            ->with(['currentVersion', 'categories'])
+            ->orderByDesc('created_at')
+            ->limit(8)
+            ->get();
 
         // Ambil data untuk hero section dari file action terpisah
         [
@@ -25,6 +32,7 @@ class HomeController extends Controller
             'categories',
             'pinnedNews',
             'latestNews',
+            'moreLatestNews',
             'popularNews',
         ));
     }

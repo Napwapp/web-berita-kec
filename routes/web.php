@@ -7,13 +7,12 @@ use App\Http\Controllers\Auth;
 
 // user
 Route::get('/', [Controllers\HomeController::class, 'index'])->name('home');
+
+Route::get('/news', [Controllers\NewsController::class, 'index'])->name('news.index');
 Route::get('/kategori/{slug}', [Controllers\CategoryNewsController::class, 'show'])->name('kategori.show');
 Route::get('/news/{news}', [Controllers\NewsController::class, 'show'])->name('news.show');
 
-// filament
-Route::middleware(['admin'])->group(function () {
-    Route::get('/dashboard', [Controllers\DashboardController::class, 'index'])->name('dashboard');
-});
+Route::get('/struktur-organisasi-kecamatan-binong', [Controllers\StrukturOrganisasiController::class, 'index'])->name('struktur-organisasi');
 
 // Login dengan Google
 Route::get('/auth/google', [Auth\GoogleController::class, 'redirect'])->name('google.redirect');

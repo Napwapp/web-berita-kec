@@ -9,7 +9,6 @@ class NewsContent extends Model
     protected $fillable = [
         'news_id',
         'title',
-        'subtitle',
         'thumbnail',
         'thumbnail_description',
         'excerpt',
