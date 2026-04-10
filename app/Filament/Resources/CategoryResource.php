@@ -48,7 +48,10 @@ class CategoryResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+        
         ->description('Kategori Unggulan akan ditampilkan di beranda untuk pengunjung. Hanya bisa memilih maksimal 3 kategori untuk dijadikan Kategori Unggulan.')
+        ->modifyQueryUsing(fn (Builder $query) => $query->orderBy('is_featured', 'desc')->orderBy('created_at', 'desc'))
+
         ->columns([
                 // Toggle Featured kategori
                 Tables\Columns\IconColumn::make('is_featured')
@@ -69,6 +72,7 @@ class CategoryResource extends Resource
                     )
                     ->action(
                         Action::make('toggleFeatured')
+                        // Modals
                             ->modalHeading(
                                 fn($record) => $record->is_featured
                                 ? 'Hapus dari Unggulan?'
@@ -102,8 +106,10 @@ class CategoryResource extends Resource
                                     return;
                                 }
 
-                                $featuredCount = \App\Models\Category::where('is_featured', true)->count();
+                                // Count
+                                $featuredCount = Category::where('is_featured', true)->count();
 
+                                // Jika sudah ada 3 kategori featured
                                 if ($featuredCount >= 3) {
                                     Notification::make()
                                         ->title('Batas unggulan tercapai')
@@ -111,10 +117,17 @@ class CategoryResource extends Resource
                                         ->danger()
                                         ->persistent()
                                         ->send();
-
                                     return;
                                 }
 
+                                // Jika kategori yang di featuredkan belum punya berita
+                                if ($record->news()->count() == 0) {
+                                    Notification::make()
+                                        ->title('Kategori ini belum punya berita, tidak bisa di jadikan sebagai Kategori Unggulan')
+                                        ->danger()
+                                        ->send();
+                                    return;
+                                }
                                 $record->update(['is_featured' => true]);
 
                                 Notification::make()

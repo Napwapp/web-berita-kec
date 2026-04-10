@@ -11,7 +11,11 @@
     </div>
 
     <!-- Berita terbaru -->
-    <section class="latest-news mt-2" id="latest-news">
+    <section class="latest-news" id="latest-news">
         <x-home.news.latest-news :latestNews="$moreLatestNews" />
+    </section>
+
+    <section id="featured-categories" class="featured-categories">
+        <x-home.news.featured-categories :featuredCategories="$featuredCategories" />    
     </section>
 </x-app>

@@ -5,6 +5,7 @@ namespace App\Filament\Resources\NewsResource\Pages;
 use App\Filament\Resources\NewsResource;
 use App\Models\NewsContent;
 use App\Services\CloudinaryService;
+use App\Helpers\ExcerptHelper;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\Model;
@@ -64,6 +65,8 @@ class EditNews extends EditRecord
             $thumbnailUrl = $newsContent->thumbnail;
         }
 
+        $excerpt = ExcerptHelper::generate($data['content'], 200);
+
         // Buat versi baru di news_contents
         $newNewsContent = NewsContent::create([
             'news_id' => $news->id,
@@ -71,8 +74,8 @@ class EditNews extends EditRecord
             'subtitle' => $data['subtitle'] ?? null,
             'thumbnail' => $thumbnailUrl,
             'thumbnail_description' => $data['thumbnail_description'] ?? null,
-            'excerpt' => $data['excerpt'] ?? null,
             'content' => $data['content'],
+            'excerpt' => $excerpt,
             'version' => $newVersion,
             'is_published' => $isPublished,
             'published_at' => $isPublished ? now() : null,

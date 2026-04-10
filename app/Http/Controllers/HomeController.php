@@ -15,11 +15,24 @@ class HomeController extends Controller
         $categories = Category::all();
         $popularNews = $popularNews->handle();
 
+        // Untuk section berita terbaru
         $moreLatestNews = News::query()
             ->whereNotNull('current_version_id')
             ->with(['currentVersion', 'categories'])
             ->orderByDesc('created_at')
             ->limit(8)
+            ->get();
+
+        // Untuk section Featured Categories
+        $featuredCategories = Category::where('is_featured', true)
+            ->with([
+                'news' => function ($query) {
+                    $query->whereNotNull('current_version_id')
+                        ->with('currentVersion')
+                        ->latest()
+                        ->limit(5);
+                }
+            ])
             ->get();
 
         // Ambil data untuk hero section dari file action terpisah
@@ -34,6 +47,7 @@ class HomeController extends Controller
             'latestNews',
             'moreLatestNews',
             'popularNews',
+            'featuredCategories',
         ));
     }
 }
