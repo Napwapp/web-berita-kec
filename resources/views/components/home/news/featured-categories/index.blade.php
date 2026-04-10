@@ -12,7 +12,7 @@
         @foreach ($category->news as $index => $news)
             @php $version = $news->currentVersion; @endphp
             <article
-                class="flex flex-col gap-2 pb-5 mb-5 border-b border-gray-100 last:border-none last:mb-0 last:pb-0"
+                class="flex flex-col gap-2 pb-5 mb-5 border-b border-gray-100 last:border-none last:mb-0 last:pb-0 group"
                 x-show="{{ $index }} < 2 || expanded"
                 x-transition
             >
@@ -26,18 +26,20 @@
                 </a>
                 @endif
 
-                <x-home.news.meta
-                    :title="$version->title"
-                    :publishedAt="$version->published_at"
-                    titleTag="h4"
-                    titleClass="text-sm"
-                />
+                <a href="{{ route('news.show', $news->slug) }}">
+                    <x-home.news.meta
+                        :title="$version->title"
+                        :publishedAt="$version->published_at"
+                        titleTag="h4"
+                        titleClass="text-sm group-hover:text-green-600"
+                    />
 
-                @if($version->excerpt)
-                <p class="text-sm text-gray-500 leading-relaxed line-clamp-3">
-                    {{ $version->excerpt }}
-                </p>
-                @endif
+                    @if($version->excerpt)
+                    <p class="text-sm text-gray-500 leading-relaxed line-clamp-3">
+                        {{ $version->excerpt }}
+                    </p>
+                    @endif
+                </a>
             </article>
         @endforeach
 
