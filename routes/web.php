@@ -14,6 +14,7 @@ Route::get('/news/{news}', [Controllers\NewsController::class, 'show'])->name('n
 
 Route::get('/struktur-organisasi-kecamatan-binong', [Controllers\StrukturOrganisasiController::class, 'index'])->name('struktur-organisasi');
 
+// admin
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::post('/struktur-organisasi/upload', [Controllers\StrukturOrganisasiController::class, 'store'])->name('struktur-organisasi.store');
     Route::delete('/struktur-organisasi/delete', [Controllers\StrukturOrganisasiController::class, 'destroy'])->name('struktur-organisasi.destroy');
@@ -25,8 +26,11 @@ Route::get('/auth/google/callback', [Auth\GoogleController::class, 'callback'])-
 
 // Middleware auth
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::patch('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+    Route::patch('/profile/foto', [ProfileController::class, 'updateFoto'])->name('profile.foto');
+    Route::delete('/profile/foto', [ProfileController::class, 'hapusFoto'])->name('profile.foto.hapus');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 

@@ -1,4 +1,4 @@
-@props(['title' => 'Document'])
+@props(['title' => 'Document', 'showNavbar' => true])
 
 <!DOCTYPE html>
 <html lang="id">
@@ -14,8 +14,10 @@
 
 <body class="bg-gray-50 text-gray-800 ">
     <div class="container mx-auto px-4 max-w-5xl">
-        <!-- Navbar -->
-        <x-navbar />
+        @if ($showNavbar)
+            <!-- Navbar -->
+            <x-navbar />
+        @endif
 
         <main class="mb-10">
             <x-flash-messages />
