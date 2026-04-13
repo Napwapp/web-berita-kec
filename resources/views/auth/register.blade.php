@@ -1,4 +1,9 @@
+<x-back-button href="/" class="mb-4">
+    Kembali ke Beranda
+</x-back-button>
+
 <x-auth-layout title="Daftar Akun" heading="Daftar Akun Baru">
+
     <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data">
         @csrf
         <!-- Name -->

@@ -14,6 +14,11 @@ Route::get('/news/{news}', [Controllers\NewsController::class, 'show'])->name('n
 
 Route::get('/struktur-organisasi-kecamatan-binong', [Controllers\StrukturOrganisasiController::class, 'index'])->name('struktur-organisasi');
 
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::post('/struktur-organisasi/upload', [Controllers\StrukturOrganisasiController::class, 'store'])->name('struktur-organisasi.store');
+    Route::delete('/struktur-organisasi/delete', [Controllers\StrukturOrganisasiController::class, 'destroy'])->name('struktur-organisasi.destroy');
+});
+
 // Login dengan Google
 Route::get('/auth/google', [Auth\GoogleController::class, 'redirect'])->name('google.redirect');
 Route::get('/auth/google/callback', [Auth\GoogleController::class, 'callback'])->name('google.callback');
