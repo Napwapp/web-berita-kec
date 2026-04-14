@@ -39,17 +39,32 @@
 
         <a href="{{ route('news.show', $news->slug) }}" class="block">
             <x-home.news.meta
+                :title="$title"
                 :publishedAt="$publishedAt"
                 :excerpt="$showExcerpt ? $content?->excerpt : null"
                 titleTag="h3"
                 titleClass="text-sm group-hover:text-green-600"
                 timestampClass="text-sm text-gray-400"
                 wrapperClass="flex flex-col gap-1"
-            >
-                {{-- Slot title dengan highlight --}}
-                <x-slot name="titleSlot">{!! $highlightedTitle !!}</x-slot>
-                <x-slot name="excerptSlot">{!! $highlightedExcerpt !!}</x-slot>
-            </x-home.news.meta>
+            />
+
+            {{-- Views & Likes: hanya tampil jika showExcerpt aktif --}}
+            @if($showExcerpt)
+                <div class="flex items-center gap-3 mt-1">
+                    <span class="flex items-center gap-1.5 text-xs text-gray-400">
+                        <i class="fas fa-eye"></i>
+                        {{ number_format($news->views ?? 0) }}
+                    </span>
+                    <span class="flex items-center gap-1.5 text-xs text-gray-400">
+                        <i class="fas fa-heart"></i>
+                        {{ number_format($news->likes ?? 0) }}
+                    </span>
+                </div>
+            @endif
+
+            {{-- Slot title dengan highlight --}}
+            <x-slot name="titleSlot">{!! $highlightedTitle !!}</x-slot>
+            <x-slot name="excerptSlot">{!! $highlightedExcerpt !!}</x-slot>
         </a>
     </div>
 </article>
