@@ -2,10 +2,16 @@
     <div class="min-h-screen bg-gray-50">
         <!-- Header -->
         <div class="bg-white border-b border-gray-200">
+            <x-breadcumb :items="[
+                ['label' => 'Beranda', 'url' => '/'],
+                ['label' => 'Berita']
+            ]">
+            </x-breadcumb>
+
             <div class="max-w-7xl mx-auto mb-6">  
                 <div class="mt-4">
                     <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">Berita</h1>
-                    <p class="text-gray-500 text-sm mt-1">Informasi terkini seputar Kecamatan Binong</p>
+                    <p class="text-gray-500 text-sm">Informasi terkini seputar Kecamatan Binong</p>
                 </div>
             </div>
         </div>

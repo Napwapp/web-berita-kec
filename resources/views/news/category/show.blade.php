@@ -2,13 +2,13 @@
     <div class="min-h-screen bg-gray-50">
         <!-- Header -->
         <div class="bg-white border-b border-gray-200">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
                 <x-breadcumb :items="[
                     ['label' => 'Beranda', 'url' => '/'],
                     ['label' => 'Berita',  'url' => route('news.index')],
                     ['label' => $category->name]
                 ]" />
-                <div class="flex items-start justify-between mt-4">
+                <div class="flex items-start justify-between my-4">
                     <div>
                         <div class="flex items-center gap-2 mb-1">
                             <span class="w-1 h-6 bg-green-600 rounded-full inline-block"></span>

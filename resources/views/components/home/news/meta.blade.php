@@ -29,7 +29,7 @@
         {{ $publishedAt?->diffForHumans() ?? '-' }}
     </span>
 
-    <{{ $titleTag }} class="news-meta__title {{ $titleClass }} m-0 line-clamp-2">
+    <{{ $titleTag }} class="news-meta__title {{ $titleClass }} m-0 line-clamp-2 group-hover:text-green-600">
         {{-- Jika titleSlot diisi → pakai slot, jika tidak → pakai prop title --}}
         @if(isset($titleSlot))
             {{ $titleSlot }}

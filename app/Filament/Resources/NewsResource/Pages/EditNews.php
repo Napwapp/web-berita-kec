@@ -73,7 +73,6 @@ class EditNews extends EditRecord
             'title' => $data['title'],
             'subtitle' => $data['subtitle'] ?? null,
             'thumbnail' => $thumbnailUrl,
-            'thumbnail_description' => $data['thumbnail_description'] ?? null,
             'content' => $data['content'],
             'excerpt' => $excerpt,
             'version' => $newVersion,

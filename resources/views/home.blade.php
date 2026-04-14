@@ -5,7 +5,7 @@
             <x-home.news.pinned-news :pinnedNews="$pinnedNews" :latestNews="$latestNews" />
         </div>
 
-        <div class="w-full lg:w-2/5 sticky top-0">
+        <div class="w-full lg:w-2/5 sticky top-4">
             <x-home.news.most-popular :popularNews="$popularNews" />
         </div>
     </div>
