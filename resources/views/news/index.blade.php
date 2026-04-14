@@ -2,7 +2,7 @@
     <div class="min-h-screen bg-gray-50">
         <!-- Header -->
         <div class="bg-white border-b border-gray-200">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">  
+            <div class="max-w-7xl mx-auto mb-6">  
                 <div class="mt-4">
                     <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">Berita</h1>
                     <p class="text-gray-500 text-sm mt-1">Informasi terkini seputar Kecamatan Binong</p>
@@ -21,7 +21,7 @@
                     </div>
 
                     <a href="{{ route('news.show', $pinnedNews->slug) }}"
-                        class="group relative flex flex-col lg:flex-row bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-md">
+                        class="group relative flex flex-col lg:flex-row bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-sm">
 
                         {{-- Thumbnail --}}
                         <div class="lg:w-3/5 aspect-video lg:aspect-auto overflow-hidden bg-gray-100">
@@ -61,24 +61,40 @@
                                 @endif
                             </div>
 
-                            <div class="flex items-center gap-3 mt-4 pt-4 border-t border-gray-100">
-                                @if($pinnedNews->author)
-                                    <img src="{{ $pinnedNews->author->profile_photo }}" alt="{{ $pinnedNews->author->name }}"
-                                        class="w-7 h-7 rounded-full object-cover" />
-                                    <span class="text-xs text-gray-500">{{ $pinnedNews->author->name }}</span>
-                                    <span class="text-gray-300">·</span>
-                                @endif
-                                <span class="text-xs text-gray-400">{{ $pinnedNews->created_at->diffForHumans() }}</span>
-                                <span class="text-gray-300">·</span>
-                                <span class="text-xs text-gray-400 flex items-center gap-1">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2"
-                                        viewBox="0 0 24 24">
-                                        <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                        <path
-                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                    </svg>
-                                    {{ number_format($pinnedNews->views) }}
-                                </span>
+                            <!-- Meta information -->
+                            <div class="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
+                                {{-- KIRI --}}
+                                <div class="flex items-center gap-3 flex-1 min-w-0">
+                                    @if($pinnedNews->author)
+                                        <img
+                                            src="{{ $pinnedNews->author->profile_photo }}"
+                                            alt="{{ $pinnedNews->author->name }}"
+                                            class="w-8 h-8 rounded-full object-cover flex-shrink-0"
+                                        />
+                                    @endif
+
+                                    {{-- author name + tanggal --}}
+                                    <div class="flex flex-col leading-tight min-w-0">
+                                        <span class="text-sm text-gray-700 truncate">
+                                            {{ $pinnedNews->author->name }}
+                                        </span>
+                                        <span class="text-xs text-gray-400">
+                                            {{ $pinnedNews->created_at->diffForHumans() }}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                {{-- KANAN --}}
+                                <div class="flex flex-col items-end gap-2 text-xs text-gray-400 ml-4 flex-shrink-0">
+                                    <span class="flex items-center gap-1">
+                                        <i class="fas fa-eye"></i>
+                                        {{ number_format($pinnedNews->views) }}
+                                    </span>
+                                    <span class="flex items-center gap-1">
+                                        <i class="fas fa-heart"></i>
+                                        {{ number_format($pinnedNews->likes) }}
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </a>
@@ -103,7 +119,7 @@
                     @endforeach
 
                     {{-- Divider --}}
-                    <div class="hidden sm:block h-5 w-px bg-gray-200 mx-1"></div>
+                    <x-divider />
 
                     {{-- Sort --}}
                     <a href="{{ route('news.index', array_filter(['sort' => 'latest'])) }}"
@@ -119,12 +135,10 @@
                     </div>
             </section>
 
-            {{-- ── 4 & 5. List Berita + Sidebar ───────────────────────────────── --}}
+            <!-- List berita & Sidebar -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
                 {{-- List Berita (kiri) --}}
                 <div class="lg:col-span-2 space-y-6">
-
                     @if($news->isEmpty())
                         <div
                             class="flex flex-col items-center justify-center py-20 text-center bg-white rounded-2xl border border-gray-200">
@@ -147,19 +161,17 @@
                             @endforeach
                         </div>
 
-                        {{-- ── 6. Pagination ──────────────────────────────────── --}}
+                        <!-- Pagination -->
                         @if($news->hasPages())
                             <div class="flex justify-center pt-2">
                                 {{ $news->links() }}
                             </div>
                         @endif
                     @endif
-
                 </div>
 
                 {{-- Sidebar (kanan) --}}
-                <aside class="space-y-6">
-
+                <aside class="space-y-6 lg:sticky lg:top-6 h-fit">
                     {{-- Popular This Week --}}
                     <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
                         <div class="flex items-center gap-2 px-5 py-4 border-b border-gray-100">

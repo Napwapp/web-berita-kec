@@ -48,5 +48,4 @@
             {{ $excerpt }}
         </p>
     @endif
-
 </div>
