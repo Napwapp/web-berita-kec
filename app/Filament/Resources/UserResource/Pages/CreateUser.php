@@ -18,13 +18,9 @@ class CreateUser extends CreateRecord
         $data['email_verified_at'] = now();
 
         // Generate password yang lebih mudah diingat
-        // Contoh: JohnDoe@2024
         $name = preg_replace('/[^a-zA-Z0-9]/', '', $data['name']); // Hapus karakter spesial
         $randomNumber = rand(100, 999);
         $password = $name . '@' . date('Y') . $randomNumber;
-
-        // Atau format lain: user123!ABC
-        // $password = strtolower($name) . rand(100, 999) . '!';
 
         $data['password'] = Hash::make($password);
         $data['password_confirmation'] = $data['password'];
