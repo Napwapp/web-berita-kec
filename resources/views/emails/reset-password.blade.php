@@ -1,0 +1,1 @@
+{{-- Blade template ini hanya untuk layout, konten diatur di ResetPasswordNotification --}}
