@@ -54,7 +54,6 @@ class CreateNews extends CreateRecord
             'news_id' => $news->id,
             'title' => $data['title'],
             'thumbnail' => $thumbnailUrl,
-            'thumbnail_description' => $data['thumbnail_description'] ?? null,
             'content' => $data['content'],
             'excerpt' => $excerpt,
             'version' => 1,

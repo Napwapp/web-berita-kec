@@ -111,12 +111,6 @@ class NewsTable
                 TextColumn::make('news.likes')
                     ->label('Likes')
                     ->sortable(),
-
-                TextColumn::make('created_at')
-                    ->label('Dibuat')
-                    ->dateTime('d M Y')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
 
             ->filters([
