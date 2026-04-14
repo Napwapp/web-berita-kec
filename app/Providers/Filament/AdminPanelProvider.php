@@ -17,6 +17,11 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use App\Filament\Widgets\StatsOverview;
+use App\Filament\Widgets\NewsChart;
+use App\Filament\Widgets\PopularNewsWidget;
+use App\Filament\Widgets\RecentActivityWidget;
+use App\Filament\Widgets\PopularCategoriesWidget;
 use Filament\Http\Middleware\Logout;
 
 class AdminPanelProvider extends PanelProvider
@@ -38,8 +43,11 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
+                StatsOverview::class,
+                NewsChart::class,
+                PopularNewsWidget::class,
+                RecentActivityWidget::class,
+                PopularCategoriesWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

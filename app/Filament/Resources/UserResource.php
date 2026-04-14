@@ -47,33 +47,7 @@ class UserResource extends Resource
                         'email' => 'Format email tidak valid. Harus berformat email seperti example@domain.com',
                         'max' => 'Email tidak boleh lebih dari 255 karakter',
                         'unique' => 'Email sudah terdaftar. Silakan gunakan email lain',
-                    ]),
-
-                Forms\Components\TextInput::make('password')
-                    ->label('Password')
-                    ->password()
-                    ->revealable()
-                    ->dehydrateStateUsing(fn($state) => Hash::make($state))
-                    ->dehydrated(fn($state) => filled($state))
-                    ->required(fn(string $context): bool => $context === 'create')
-                    ->rule(Password::defaults())
-                    ->minLength(8)
-                    ->validationMessages([
-                        'required' => 'Password tidak boleh kosong',
-                        'min' => 'Password harus minimal 8 karakter',
-                    ]),
-
-                Forms\Components\TextInput::make('password_confirmation')
-                    ->label('Konfirmasi Password')
-                    ->password()
-                    ->revealable()
-                    ->dehydrated(false)
-                    ->required(fn(string $context): bool => $context === 'create')
-                    ->same('password')
-                    ->validationMessages([
-                        'required' => 'Konfirmasi password tidak boleh kosong',
-                        'same' => 'Konfirmasi password tidak cocok',
-                    ]),
+                    ]),                
 
                 Forms\Components\Select::make('role')
                     ->label('Role')
