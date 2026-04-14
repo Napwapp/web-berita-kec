@@ -32,6 +32,9 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile/foto', [ProfileController::class, 'updateFoto'])->name('profile.foto');
     Route::delete('/profile/foto', [ProfileController::class, 'hapusFoto'])->name('profile.foto.hapus');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Request yang hanya bisa oleh user
+    Route::post('/news/{news}/like', [Controllers\NewsController::class, 'like'])->name('news.like');
 });
 
 require __DIR__ . '/auth.php';

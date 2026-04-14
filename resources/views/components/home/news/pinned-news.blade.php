@@ -48,13 +48,13 @@
                     @endphp
 
                     <a href="{{ route('news.show', $news) }}"
-                        class="latest-news-item flex flex-col px-3 py-3 border-r border-gray-200 last:border-r-0 hover:bg-gray-50 transition-colors duration-150">
+                        class="latest-news-item group flex flex-col px-3 py-3 border-r border-gray-200 last:border-r-0 hover:bg-gray-50 transition-colors duration-150">
 
                         <x-home.news.meta 
                             :title="Str::limit($c?->title, 100)"
                             :publishedAt="$pub"
                             titleTag="p"
-                            titleClass="latest-news-item__title text-[0.9rem] font-semibold m-0 line-clamp-3"
+                            titleClass="latest-news-item__title text-[0.9rem] font-semibold m-0 line-clamp-3 group-hover:text-green-600"
                             timestampClass="latest-news-item__timestamp text-[0.65rem]"
                         />
                     </a>
