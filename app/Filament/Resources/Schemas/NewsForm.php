@@ -146,13 +146,7 @@ class NewsForm
                                 ->getUploadedFileNameForStorageUsing(function ($file) {
                                     $original = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
                                     return 'news-' . now()->timestamp . '-' . str($original)->slug();
-                                }),
-
-                            TextInput::make('thumbnail_description')
-                                ->label('Deskripsi Thumbnail (Opsional)')
-                                ->nullable()
-                                ->maxLength(2000)
-                                ->helperText('Caption atau deskripsi gambar (opsional).'),
+                                }),                            
                         ]),
                 ])
                 ->columnSpan(['lg' => 1]),
