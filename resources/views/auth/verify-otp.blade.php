@@ -1,6 +1,10 @@
+<x-back-button href="{{ route('register') }}">
+    Kembali ke Halaman Registrasi
+</x-back-button>
+
 <x-auth-layout title="Verifikasi OTP">
     <x-slot name="header">
-        <x-flash-messages />    
+        <x-flash-messages />
     </x-slot>
     
     <!-- Sembunyikan logo dari layout -->

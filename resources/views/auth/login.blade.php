@@ -1,3 +1,7 @@
+<x-back-button href="/" class="mb-4">
+    Kembali ke Beranda
+</x-back-button>
+
 <x-auth-layout title="Login" heading="Masuk ke Akun Anda">
     <x-slot name="header">
         <x-flash-messages />

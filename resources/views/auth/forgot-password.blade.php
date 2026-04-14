@@ -1,3 +1,7 @@
+<x-back-button href="{{ route('login') }}">
+    Kembali ke Halaman Login
+</x-back-button>
+
 <x-auth-layout heading="Lupa Password?" title="Reset Password">
     <x-slot name="header">
         <x-flash-messages></x-flash-messages>

@@ -5,6 +5,7 @@ namespace App\Filament\Resources\NewsResource\Pages;
 use App\Filament\Resources\NewsResource;
 use App\Models\NewsContent;
 use App\Services\CloudinaryService;
+use App\Helpers\ExcerptHelper;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\Model;
@@ -43,14 +44,6 @@ class EditNews extends EditRecord
         // Panggil method CLouidnaryService
         $cloudinary = app(CloudinaryService::class);
 
-        // Versioning slug
-        $baseSlug = Str::slug($data['title']);
-
-        // Jika versi baru lebih dari 1, tambhakan -v{version}
-        $slug = $newVersion > 1
-            ? $baseSlug . '-v' . $newVersion
-            : $baseSlug;
-
         // Jika ada thumbnail baru
         $thumbnailPath = $data['thumbnail'] ?? null;
         $isNewThumbnail = !empty($data['thumbnail']) && !str_starts_with($data['thumbnail'], 'http');
@@ -72,16 +65,17 @@ class EditNews extends EditRecord
             $thumbnailUrl = $newsContent->thumbnail;
         }
 
+        $excerpt = ExcerptHelper::generate($data['content'], 200);
+
         // Buat versi baru di news_contents
         $newNewsContent = NewsContent::create([
             'news_id' => $news->id,
             'title' => $data['title'],
             'subtitle' => $data['subtitle'] ?? null,
-            'slug' => $slug,
             'thumbnail' => $thumbnailUrl,
             'thumbnail_description' => $data['thumbnail_description'] ?? null,
-            'excerpt' => $data['excerpt'] ?? null,
             'content' => $data['content'],
+            'excerpt' => $excerpt,
             'version' => $newVersion,
             'is_published' => $isPublished,
             'published_at' => $isPublished ? now() : null,
