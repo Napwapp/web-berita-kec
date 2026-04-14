@@ -54,7 +54,7 @@
                             :title="Str::limit($c?->title, 100)"
                             :publishedAt="$pub"
                             titleTag="p"
-                            titleClass="latest-news-item__title text-[0.9rem] font-semibold m-0 line-clamp-3 group-hover:text-green-600"
+                            titleClass="latest-news-item__title text-[0.9rem] font-semibold m-0 line-clamp-3"
                             timestampClass="latest-news-item__timestamp text-[0.65rem]"
                         />
                     </a>

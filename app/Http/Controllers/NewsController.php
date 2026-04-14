@@ -95,7 +95,7 @@ class NewsController extends Controller
         }
 
         $cacheKey = "news_like_{$news->id}_user_" . Auth::id();
-        $liked    = Cache::get($cacheKey, false);
+        $liked = Cache::get($cacheKey, false);
 
         if ($liked) {
             $news->decrement('likes');
@@ -111,5 +111,31 @@ class NewsController extends Controller
             'liked' => $liked,
             'likes' => $news->fresh()->likes,
         ]);
+    }
+
+    // Method search
+    public function search(Request $request)
+    {
+        $query = trim($request->get('q', ''));
+
+        $results = collect();
+        $total = 0;
+
+        if ($query !== '') {
+            $results = News::whereHas('currentVersion', function ($q) use ($query) {
+                $q->where('title', 'like', "%{$query}%")
+                    ->orWhere('excerpt', 'like', "%{$query}%")
+                    ->orWhere('content', 'like', "%{$query}%");
+            })
+                ->whereNotNull('current_version_id')
+                ->with(['currentVersion', 'categories'])
+                ->latest()
+                ->paginate(12)
+                ->withQueryString();
+
+            $total = $results->total();
+        }
+
+        return view('news.search', compact('results', 'query', 'total'));
     }
 }

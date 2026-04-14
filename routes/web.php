@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth;
 Route::get('/', [Controllers\HomeController::class, 'index'])->name('home');
 
 Route::get('/news', [Controllers\NewsController::class, 'index'])->name('news.index');
+Route::get('/news/search', [Controllers\NewsController::class, 'search'])->name('news.search');
 Route::get('/kategori/{slug}', [Controllers\CategoryNewsController::class, 'show'])->name('kategori.show');
 Route::get('/news/{news}', [Controllers\NewsController::class, 'show'])->name('news.show');
 

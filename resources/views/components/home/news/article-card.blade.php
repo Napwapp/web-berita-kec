@@ -1,10 +1,27 @@
-@props(['news', 'showExcerpt' => false, 'showCategory' => true])
+@props([
+    'news', 
+    'showExcerpt' => false, 
+    'showCategory' => true, 
+    'highlight' => null
+])
 
 @php
-    $content = $news->currentVersion;
-    $thumbnail = $content?->thumbnail;
-    $title = $content?->title ?? 'Untitled';
+    $content     = $news->currentVersion;
+    $thumbnail   = $content?->thumbnail;
+    $title       = $content?->title ?? 'Untitled';
     $publishedAt = $news->created_at;
+
+    // Highlight keyword di title dan excerpt
+    $highlightKeyword = function (?string $text, ?string $keyword): string {
+        if (!$text || !$keyword) return e($text ?? '');
+        $escaped = e($text);
+        $pattern = '/(' . preg_quote(e($keyword), '/') . ')/iu';
+        return preg_replace($pattern, '<mark class="bg-yellow-100 text-yellow-800 rounded px-0.5">$1</mark>', $escaped);
+    };
+
+    $highlightedTitle   = $highlightKeyword($title, $highlight);
+    $highlightedExcerpt = $highlightKeyword($content?->excerpt, $highlight);
+
 @endphp
 
 <article class="bg-white border border-gray-100 overflow-hidden hover:shadow-sm group">
@@ -22,14 +39,17 @@
 
         <a href="{{ route('news.show', $news->slug) }}" class="block">
             <x-home.news.meta
-                :title="$title"
                 :publishedAt="$publishedAt"
                 :excerpt="$showExcerpt ? $content?->excerpt : null"
                 titleTag="h3"
                 titleClass="text-sm group-hover:text-green-600"
                 timestampClass="text-sm text-gray-400"
                 wrapperClass="flex flex-col gap-1"
-            />
+            >
+                {{-- Slot title dengan highlight --}}
+                <x-slot name="titleSlot">{!! $highlightedTitle !!}</x-slot>
+                <x-slot name="excerptSlot">{!! $highlightedExcerpt !!}</x-slot>
+            </x-home.news.meta>
         </a>
     </div>
 </article>
