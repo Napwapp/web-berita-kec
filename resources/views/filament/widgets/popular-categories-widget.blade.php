@@ -2,7 +2,7 @@
     <x-filament::section>
         <h2 class="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">
             <i class="fas fa-tags text-indigo-500 mr-2"></i>
-            Kategori Terpopuler
+            Kategori yang Memiliki Berita Terbanyak
         </h2>
         
         <div class="space-y-4">

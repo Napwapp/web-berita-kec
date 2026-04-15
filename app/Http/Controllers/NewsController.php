@@ -53,7 +53,7 @@ class NewsController extends Controller
                 fn($q) =>
                 $q->orderByDesc('created_at')
             )
-            ->paginate(9)
+            ->paginate(10)
             ->withQueryString();
 
         return view('news.index', compact(

@@ -31,7 +31,7 @@
                         
                         <div class="flex-1 min-w-0">
                             <a href="{{ route('filament.admin.resources.news.edit', $news) }}" 
-                               class="text-sm font-medium text-gray-900 dark:text-gray-100 hover:text-primary-600 truncate block">
+                                class="text-sm font-medium text-gray-900 dark:text-gray-100 hover:text-primary-600 truncate block">
                                 {{ $news->title }}
                             </a>
                             <div class="flex gap-3 text-xs text-gray-500 mt-1">
