@@ -46,14 +46,13 @@ class CategoryNewsController extends Controller
             ->whereNotNull('current_version_id')
             ->whereHas('categories', fn($q) => $q->where('categories.id', $category->id))
             ->with(['currentVersion', 'categories'])
-            ->when($featuredNews, fn($q) => $q->where('id', '!=', $featuredNews->id))
             ->when($sort === 'popular', fn($q) =>
                 $q->orderByRaw('(views * 1 + likes * 3) DESC')
             )
             ->when($sort !== 'popular', fn($q) =>
                 $q->orderByDesc('created_at')
             )
-            ->paginate(9)
+            ->paginate(10)
             ->withQueryString();
 
         return view('news.category.show', compact(

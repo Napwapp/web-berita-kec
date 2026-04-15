@@ -15,19 +15,12 @@
             @forelse($popularNews as $index => $news)
                 <div class="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition">
                     <div class="flex items-center gap-3 flex-1">
-                        <div class="flex-shrink-0 w-8 text-center">
-                            @if($index < 3)
-                                @if($index == 0)
-                                    <i class="fas fa-trophy text-yellow-500 text-2xl"></i>
-                                @elseif($index == 1)
-                                    <i class="fas fa-medal text-gray-400 text-2xl"></i>
-                                @else
-                                    <i class="fas fa-medal text-amber-600 text-2xl"></i>
-                                @endif
-                            @else
-                                <span class="text-gray-400 font-bold">{{ $index + 1 }}</span>
-                            @endif
+                        <div class="flex-shrink-0 w-8 h-8 flex items-center justify-center">
+                            <span class="text-gray-400 font-bold">
+                                {{ $index + 1 }}
+                            </span>
                         </div>
+
                         
                         <div class="flex-1 min-w-0">
                             <a href="{{ route('filament.admin.resources.news.edit', $news) }}" 

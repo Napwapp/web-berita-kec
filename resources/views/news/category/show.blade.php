@@ -18,7 +18,7 @@
                             <p class="text-gray-500 text-sm mt-1 ml-3">{{ $category->description }}</p>
                         @endif
                         <p class="text-xs text-gray-400 mt-1 ml-3">
-                            {{ $news->total() + ($featuredNews ? 1 : 0) }} berita dalam kategori ini</p>
+                            {{ $news->total() }} berita dalam kategori ini</p>
                     </div>
                 </div>
             </div>
