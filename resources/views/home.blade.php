@@ -11,11 +11,8 @@
     </div>
 
     <!-- Berita terbaru -->
-    <section class="latest-news" id="latest-news">
-        <x-home.news.latest-news :latestNews="$moreLatestNews" />
-    </section>
+    <x-home.news.latest-news :latestNews="$moreLatestNews" />
 
-    <section id="featured-categories" class="featured-categories">
-        <x-home.news.featured-categories :featuredCategories="$featuredCategories" />    
-    </section>
+    <!-- Berita pada Kategori Pilihan -->
+    <x-home.news.featured-categories :featuredCategories="$featuredCategories" />    
 </x-app>

@@ -1,4 +1,6 @@
-
+@php
+    $isBeritaActive = request()->routeIs('kategori.show');
+@endphp
 
 <nav class="navbar mt-4 py-4">
     <!-- Navbar -->
@@ -18,35 +20,27 @@
     <div x-data="{ open: false }">
         <div class="news-filter overflow-x-auto">
             <div class="flex items-center w-full">
-                <!-- Kiri -->
                 <div class="flex items-center gap-2">
                     <x-navbar.nav-link href="/" :active="request()->routeIs('home')">Beranda</x-navbar.nav-link>
-                    <x-navbar.nav-link href="{{ route('news.index') }}" :active="request()->is('news*')">Berita</x-navbar.nav-link>
-                    <x-navbar.nav-link href="{{ route('struktur-organisasi') }}" :active="request()->routeIs('struktur-organisasi')">Struktur Organisasi</x-navbar.nav-link>
-                </div>
 
-                <!-- Tengah -->
-                <div class="flex items-center gap-2 flex-1 justify-center">
-                    @foreach($latestCategories as $latestCategory)
-                        <x-navbar.nav-link href="{{ route('kategori.show', $latestCategory->slug) }}"
-                            :active="request()->route('slug') === $latestCategory->slug">
-                            {{ $latestCategory->name }}
-                        </x-navbar.nav-link>
-                    @endforeach
-                </div>
-
-                <!-- Kanan -->
-                <div class="ml-auto">
-                    <button @click="open = !open"
-                        class="px-4 py-2 font-semibold inline-flex items-center gap-2 whitespace-nowrap hover:text-green-600 transition-colors"
-                        :class="{ 'text-green-600': open }">
-                        Selengkapnya
+                    <!-- Menu berita yang memunculkan sebmenu berita-->
+                    <x-navbar.nav-link 
+                        tag="button"
+                        :active="request()->routeIs('kategori.show')"
+                        @click="open = !open"
+                        class="gap-2">
+                        Berita
                         <i class="fa-solid fa-chevron-down transition" :class="{ 'rotate-180': open }"></i>
-                    </button>
-                </div>
+                    </x-navbar.nav-link>
+
+                    <x-navbar.nav-link href="{{ route('struktur-organisasi') }}" :active="request()->routeIs('struktur-organisasi')">Struktur Organisasi Kecamatan Binong</x-navbar.nav-link>
+                    <x-navbar.nav-link href="/">Agenda</x-navbar.nav-link>
+                    <x-navbar.nav-link href="/">Berita Pemerintahan</x-navbar.nav-link>
+                    <x-navbar.nav-link href="/">Pengumuman</x-navbar.nav-link>
+                </div>                       
             </div>
 
-            <!-- Dropdown -->
+            <!-- Sebmenu berita -->
             <div x-show="open" 
                 x-cloak
                 @click.outside="open = false"
@@ -54,7 +48,7 @@
 
                 <div class="flex flex-col gap-2 p-6 mx-auto">
                     <h2 class="text-lg font-bold text-gray-700">
-                        Semua Kategori
+                        Pilih Kategori Berita
                     </h2>
 
                     <div class="flex flex-wrap gap-2">
