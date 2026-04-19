@@ -10,7 +10,8 @@ class Category extends Model
 {
     protected $fillable = [
         'name',
-        'slug'
+        'slug',
+        'is_featured',
     ];
 
     // Kategori dapat memiliki banyak berita dan berita dapat memiliki banyak kategori.

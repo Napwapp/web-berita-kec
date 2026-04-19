@@ -39,11 +39,6 @@ class NewsForm
                                         return;
                                     $set('slug', Str::slug($state));
                                 }),
-
-                            TextInput::make('subtitle')
-                                ->label('Sub Judul (Opsional)')
-                                ->nullable()
-                                ->maxLength(255),
                         ]),
 
                     Section::make('Konten')
@@ -54,22 +49,14 @@ class NewsForm
                                 ->fileAttachmentsDisk('cloudinary')
                                 ->fileAttachmentsDirectory('news/content-attachments')
                                 ->fileAttachmentsVisibility('public')
-                                // ->fileAttachmentsConfiguration(function (FileUpload $component) {
-                                //     return $component
-                                //         ->optimize('webp')
-                                //         ->imageResizeMode('contain')
-                                //         ->imageResizeTargetWidth(1200)
-                                //         ->imageResizeUpscale(false)
-                                //         ->maxSize(5120);
-                                // })
                                 ->columnSpanFull(),
 
                             Textarea::make('excerpt')
                                 ->label('Ringkasan Berita (Opsional)')
                                 ->nullable()
                                 ->rows(3)
-                                ->maxLength(500)
-                                ->helperText('Ringkasan singkat berita (opsional).'),
+                                ->maxLength(250)
+                                ->helperText('Ringkasan singkat berita (opsional) Maximal 250 Karakter.'),
                         ]),
                 ])
                 ->columnSpan(['lg' => 2]),
@@ -159,13 +146,7 @@ class NewsForm
                                 ->getUploadedFileNameForStorageUsing(function ($file) {
                                     $original = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
                                     return 'news-' . now()->timestamp . '-' . str($original)->slug();
-                                }),
-
-                            TextInput::make('thumbnail_description')
-                                ->label('Deskripsi Thumbnail (Opsional)')
-                                ->nullable()
-                                ->maxLength(2000)
-                                ->helperText('Caption atau deskripsi gambar (opsional).'),
+                                }),                            
                         ]),
                 ])
                 ->columnSpan(['lg' => 1]),

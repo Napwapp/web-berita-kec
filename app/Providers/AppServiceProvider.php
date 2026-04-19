@@ -7,6 +7,8 @@ use Filament\Http\Responses\Auth\Contracts\LogoutResponse as LogoutResponseContr
 use Illuminate\Support\ServiceProvider;
 use App\Models\NewsContent;
 use App\Observers\NewsContentObserver;
+use Illuminate\Support\Facades\View;
+use App\View\Composers\NavbarComposer;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,5 +27,11 @@ class AppServiceProvider extends ServiceProvider
     {
         // Observer untuk menghapus gambar di Cloudinary ketika NewsContent dihapus
         NewsContent::observe(NewsContentObserver::class);
+
+        // view composer
+        View::composer(
+            ['components.navbar.index', 'components.navbar.all-categories'],
+            NavbarComposer::class
+        );
     }
 }

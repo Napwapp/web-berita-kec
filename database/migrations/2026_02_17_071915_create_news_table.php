@@ -13,13 +13,16 @@ return new class extends Migration {
         Schema::create('news', function (Blueprint $table) {
             $table->id();
             $table->foreignId('author_id')->constrained('users')->cascadeOnDelete();
+            $table->string('slug')->unique();
             $table->unsignedInteger('likes')->default(0);
             $table->unsignedInteger('views')->default(0);
+            $table->timestamp('pinned_at')->nullable();
+            $table->timestamp('pin_expired_at')->nullable();
             $table->timestamps();
         });
     }
 
-    /**
+    /*
      * Reverse the migrations.
      */
     public function down(): void

@@ -1,4 +1,4 @@
-@props(['title' => 'Document'])
+@props(['title' => 'Document', 'showNavbar' => true])
 
 <!DOCTYPE html>
 <html lang="id">
@@ -6,15 +6,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{$title}}</title>
+
+    @yield('meta')
 
     <x-link />
 </head>
 
-<body class="bg-gray-50 text-gray-800">
-    <div class="container mx-auto px-4 max-w-4xl">
-        <!-- Navbar -->
-        <x-navbar />
+<body class="bg-gray-50 text-gray-800 ">
+    <div class="container mx-auto px-4 max-w-5xl">
+        @if ($showNavbar)
+            <!-- Navbar -->
+            <x-navbar />
+        @endif
 
         <main class="mb-10">
             <x-flash-messages />
@@ -24,6 +27,9 @@
                 {{$slot}}
             </main>
         </main>
+
     </div>
+    <x-footer />
 </body>
+
 </html>

@@ -9,8 +9,6 @@ class NewsContent extends Model
     protected $fillable = [
         'news_id',
         'title',
-        'subtitle',
-        'slug',
         'thumbnail',
         'thumbnail_description',
         'excerpt',
@@ -18,6 +16,10 @@ class NewsContent extends Model
         'version',
         'is_published',
         'published_at'
+    ];
+    
+    protected $casts = [
+        'published_at' => 'datetime',
     ];
 
     // Satu konten berita (NewsContent) dimiliki oleh satu berita (News).
