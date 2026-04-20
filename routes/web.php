@@ -5,13 +5,13 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers;
 use App\Http\Controllers\Auth;
 
-// user
+// Guests
 Route::get('/', [Controllers\HomeController::class, 'index'])->name('home');
-
 Route::get('/news', [Controllers\NewsController::class, 'index'])->name('news.index');
 Route::get('/news/search', [Controllers\NewsController::class, 'search'])->name('news.search');
 Route::get('/kategori/{slug}', [Controllers\CategoryNewsController::class, 'show'])->name('kategori.show');
 Route::get('/news/{news}', [Controllers\NewsController::class, 'show'])->name('news.show');
+Route::get('/agenda-kecamatan', [Controllers\AgendaController::class, 'index'])->name('agenda.index');
 
 Route::get('/struktur-organisasi-kecamatan-binong', [Controllers\StrukturOrganisasiController::class, 'index'])->name('struktur-organisasi');
 
