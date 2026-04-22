@@ -14,7 +14,8 @@
         "joshembling/image-optimizer": "^1.6",
         "laravel/framework": "^12.0",
         "laravel/socialite": "^5.24",
-        "laravel/tinker": "^2.10.1"
+        "laravel/tinker": "^2.10.1",
+        "saade/filament-fullcalendar": "^3.2"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

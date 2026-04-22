@@ -22,6 +22,7 @@ use App\Filament\Widgets\NewsChart;
 use App\Filament\Widgets\PopularNewsWidget;
 use App\Filament\Widgets\RecentActivityWidget;
 use App\Filament\Widgets\PopularCategoriesWidget;
+use Saade\FilamentFullCalendar\FilamentFullCalendarPlugin;
 use Filament\Http\Middleware\Logout;
 
 class AdminPanelProvider extends PanelProvider
@@ -32,6 +33,16 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
+            ->plugin(
+                FilamentFullCalendarPlugin::make()
+                    ->schedulerLicenseKey('')
+                    ->selectable(true)
+                    ->editable(true)
+                    ->timezone(config('app.timezone'))
+                    ->locale(config('app.locale'))
+                    ->plugins(['interaction', 'daygrid', 'timegrid', 'list'])
+                    ->config([])
+            )
             ->login()
             ->colors([
                 'primary' => Color::Amber,

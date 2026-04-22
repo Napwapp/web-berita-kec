@@ -22,6 +22,7 @@ return new class extends Migration {
             $table->string('online_link')->nullable();
             $table->string('location')->nullable();
             $table->enum('status', ['draft', 'published', 'archived'])->default('draft');
+            $table->boolean('is_published')->default(false);
             $table->dateTime('published_at')->nullable();
             $table->softDeletes();
             $table->timestamps();
