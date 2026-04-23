@@ -11,9 +11,15 @@ use Saade\FilamentFullCalendar\Actions;
 use Filament\Forms;
 use Illuminate\Support\Carbon;
 use Filament\Notifications\Notification;
+use Filament\Support\Assets\Js;
 
 class CalendarWidget extends FullCalendarWidget
 {
+    public function getHeading(): string
+    {
+        return 'Agenda';
+    }
+
     public Model|string|null $model = Agenda::class;
 
     // Form modal saat klik tanggal pada calender
@@ -241,6 +247,7 @@ class CalendarWidget extends FullCalendarWidget
                 'center' => 'title',
                 'right' => 'dayGridMonth,timeGridWeek,timeGridDay,listMonth',
             ],
+        
 
             'buttonText' => [
                 'today' => 'Hari Ini',
