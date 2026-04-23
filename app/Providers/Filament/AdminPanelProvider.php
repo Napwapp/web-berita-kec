@@ -35,13 +35,13 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->plugin(
                 FilamentFullCalendarPlugin::make()
-                    ->schedulerLicenseKey('')
-                    ->selectable(true)
-                    ->editable(true)
+                    ->schedulerLicenseKey('') 
+                    ->selectable(true) // Enable drag-and-drop & resizing
+                    ->editable(true) // Enable event editing (drag, resize)                
                     ->timezone(config('app.timezone'))
                     ->locale(config('app.locale'))
-                    ->plugins(['interaction', 'daygrid', 'timegrid', 'list'])
-                    ->config([])
+                    ->plugins(['interaction', 'dayGrid', 'timeGrid', 'list']) // Load necessary FullCalendar plugins
+                    ->config([]) // Konfigurasi tambahan jika diperlukan
             )
             ->login()
             ->colors([

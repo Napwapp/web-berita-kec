@@ -132,10 +132,16 @@ class Agenda extends Model
         return $this;
     }
 
-    // Cek status Publish
+    // Cek status Publish (untuk instance model)
     public function isPublished(): bool
     {
         return $this->status === 'published';
+    }
+
+    // Scope untuk query builder - hanya published agenda
+    public function scopeIsPublished(Builder $query): Builder
+    {
+        return $query->where('status', 'published');
     }
 
     // Untuk membantu toggle status publish/unpublish di form nya

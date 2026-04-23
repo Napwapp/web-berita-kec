@@ -19,6 +19,9 @@ Route::get('/struktur-organisasi-kecamatan-binong', [Controllers\StrukturOrganis
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::post('/struktur-organisasi/upload', [Controllers\StrukturOrganisasiController::class, 'store'])->name('struktur-organisasi.store');
     Route::delete('/struktur-organisasi/delete', [Controllers\StrukturOrganisasiController::class, 'destroy'])->name('struktur-organisasi.destroy');
+
+    // Drag & drop event fullcalendar js
+    Route::post('admin/agendas/update-date', [Controllers\AgendaController::class, 'updateDate'])->name('agendas.update-date');  
 });
 
 // Login dengan Google
