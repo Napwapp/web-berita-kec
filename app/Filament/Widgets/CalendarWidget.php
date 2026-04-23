@@ -16,27 +16,15 @@ class CalendarWidget extends FullCalendarWidget
 {
     public Model|string|null $model = Agenda::class;
 
+    // Form modal saat klik tanggal pada calender
     protected function modalActions(): array
     {
         return [
-            // Form modal saat klik tanggal pada calender
-            Actions\CreateAction::make()
-                ->mountUsing(
-                    function (Forms\Form $form, array $arguments) {
-                        $form->fill([
-                            'title' => $arguments['agenda']['title'] ?? '',
-                            'description' => $arguments['agenda']['description'] ?? '',
-                            'is_all_day' => $arguments['agenda']['is_all_day'] ?? false,
-                            'start_at' => $arguments['agenda']['start'] ?? now(),
-                            'end_at' => $arguments['agenda']['end'] ?? now()->addHour(),
-                            'location' => $arguments['agenda']['location'] ?? '',
-                            'is_published' => $arguments['agenda']['is_published'] ?? false,
-                            'is_online' => $arguments['agenda']['is_online'] ?? false,
-                            'online_link' => $arguments['agenda']['online_link'] ?? '',
-                            'category_id' => $arguments['agenda']['category_id'] ?? null,
-                        ]);
-                    }
-                ),
+            Actions\EditAction::make()
+                ->label('Edit Agenda')
+                ->modalHeading('Edit Agenda')
+                ->modalSubmitActionLabel('Simpan Perubahan')
+                ->modalWidth('2xl'),
             Actions\DeleteAction::make(),
         ];
     }
@@ -62,7 +50,6 @@ class CalendarWidget extends FullCalendarWidget
                         'start' => $agenda->start_at->toIso8601String(),
                         'end' => $agenda->end_at->toIso8601String(),
                         'allDay' => $agenda->is_all_day,
-                        'url' => AgendaResource::getUrl('view', ['record' => $agenda]),
                         'backgroundColor' => $this->resolveEventColor($agenda),
                         'borderColor' => $this->resolveEventColor($agenda),
                         'textColor' => '#ffffff',
@@ -77,9 +64,7 @@ class CalendarWidget extends FullCalendarWidget
                             'category_color' => $agenda->category?->color,
                         ],
                     ];
-
                 }
-
             )
             ->toArray();
     }
@@ -105,7 +90,6 @@ class CalendarWidget extends FullCalendarWidget
         }
         return '#9ca3af'; // gray-400  — sudah selesai
     }
-
 
     // ──────────────────────────────────────────────────────────────────────
     // DRAG & DROP — eventDrop
@@ -164,10 +148,10 @@ class CalendarWidget extends FullCalendarWidget
     // ──────────────────────────────────────────────────────────────────────
 
     public function onEventResize(
-        array $event, 
-        array $oldEvent, 
-        array $relatedEvents, 
-        array $startDelta, 
+        array $event,
+        array $oldEvent,
+        array $relatedEvents,
+        array $startDelta,
         array $endDelta
     ): bool {
         $agenda = Agenda::find($event['id']);
@@ -213,6 +197,37 @@ class CalendarWidget extends FullCalendarWidget
         return true;
     }
 
+    protected function getHeaderActions(): array
+    {
+        return [
+            Actions\EditAction::make()
+                ->label('Edit Agenda')
+                ->modalHeading('Edit Agenda')
+                ->modalSubmitActionLabel('Simpan Perubahan')
+                ->modalWidth('2xl')
+                ->mutateRecordDataUsing(function (array $data): array {
+                    return [
+                        ...$data,
+                        'is_online' => (bool) ($data['is_online'] ?? false),
+                        'is_all_day' => (bool) ($data['is_all_day'] ?? false),
+                        'is_published' => (bool) ($data['is_published'] ?? false),
+                    ];
+                })
+
+                ->using(function (Agenda $record, array $data): Agenda {
+                    // Pastikan slug ikut tersimpan walaupun tidak ada input slug di form
+                    $data['slug'] = $this->resolveUniqueSlug(
+                        $data['slug'] ?? $data['title'] ?? '',
+                        $record->id
+                    );
+
+                    $record->update($data);
+
+                    return $record;
+                }),
+        ];
+    }
+
 
     // Config untuk full calendar
     public function config(): array
@@ -252,11 +267,9 @@ class CalendarWidget extends FullCalendarWidget
         ];
     }
 
-
     // Form Schema
     public function getFormSchema(): array
     {
         return (AgendaForms::class)::schema();
     }
-
 }

@@ -10,6 +10,7 @@ class Agenda extends Model
 {
     use SoftDeletes;
     protected $fillable = [
+        'id',
         'category_id',
         'title',
         'description',

@@ -165,10 +165,10 @@ class AgendaForms
                                     ->placeholder('Contoh: https://meet.google.com/...')
                                     ->prefixIcon('heroicon-m-video-camera')
                                     ->visible(function (Get $get): bool {
-                                        return $get('is_online');
+                                        return (bool) $get('is_online');
                                     })
                                     ->required(function (Get $get): bool {
-                                        return $get('is_online');
+                                        return (bool) $get('is_online');
                                     })
                                     ->helperText('Masukkan link Zoom, Meet, atau platform daring lainnya.'),
 
@@ -178,10 +178,10 @@ class AgendaForms
                                     ->placeholder('Contoh: Aula Kecamatan Binong')
                                     ->prefixIcon('heroicon-m-map-pin')
                                     ->visible(function (Get $get): bool {
-                                        return !$get('is_online');
+                                        return !(bool) $get('is_online');
                                     })
                                     ->required(function (Get $get): bool {
-                                        return !$get('is_online');
+                                        return !(bool) $get('is_online');
                                     })
                                     ->helperText('Masukkan alamat lengkap tempat pelaksanaan agenda.'),
                             ]),
