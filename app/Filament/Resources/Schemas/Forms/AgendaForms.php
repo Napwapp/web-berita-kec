@@ -126,9 +126,9 @@ class AgendaForms
                                             $set('slug', Str::slug($state));
                                         }),
                                         ColorPicker::make('color')
-                                            ->label('Warna Kategori')
+                                            ->label('Warna Kategori (Opsional)')
                                             ->nullable()
-                                            ->helperText('Pilih warna untuk membedakan kategori ini.'),
+                                            ->helperText('Pilih warna yang diinginkan untuk membedakan warna pada kategori ini.'),
                                     ])
 
                                     ->createOptionAction(function (Action $action) {

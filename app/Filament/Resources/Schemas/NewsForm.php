@@ -76,6 +76,16 @@ class NewsForm
                     // Kategori berita
                     Section::make('Kategori')
                         ->schema([
+                            Select::make('type')
+                                ->label('Pilih Tipe Berita')
+                                ->required()
+                                ->options([
+                                    'pemerintahan' => 'Pemerintahan',
+                                    'masyarakat' => 'Masyarakat',
+                                ])
+                                ->default('masyarakat')
+                                ->helperText('Pilih "Pemerintahan" jika berita berfokus pada kegiatan, kebijakan, atau instansi resmi. Pilih "Masyarakat" jika berita berisi aktivitas warga, kondisi sosial, atau kejadian umum.'),
+                                
                             Select::make('categories')
                                 ->label('Kategori Berita')
                                 ->required()

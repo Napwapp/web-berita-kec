@@ -10,39 +10,45 @@ use App\Actions\Home\GetPopularNewsAction;
 
 class HomeController extends Controller
 {
-    public function index(GetHeroNewsSectionAction $heroNewsSection, GetPopularNewsAction $popularNews, )
+    public function index(GetHeroNewsSectionAction $heroNewsSection, GetPopularNewsAction $popularNews, Request $request)
     {
+        $type = $request->type;
         $categories = Category::all();
         $popularNews = $popularNews->handle();
 
         // Untuk section berita terbaru
         $moreLatestNews = News::query()
             ->whereNotNull('current_version_id')
+            ->when($type, fn($q) => $q->where('type', $type))
             ->with(['currentVersion', 'categories'])
             ->orderByDesc('created_at')
             ->limit(8)
             ->get();
 
         $featuredCategories = Category::where('is_featured', true)
-        ->withCount(['news' => function ($query) {
-            $query->whereNotNull('current_version_id');
-        }])
-        ->with([
-            'news' => function ($query) {
-                $query->whereNotNull('current_version_id')
-                    ->with('currentVersion')
-                    ->latest()
-                    ->limit(2);
-            }
-        ])
-        ->orderByDesc('news_count')
-        ->get();
+            ->withCount([
+                'news' => function ($query) use ($type) {
+                    $query->whereNotNull('current_version_id')
+                        ->when($type, fn($q) => $q->where('type', $type));
+                }
+            ])
+            ->with([
+                'news' => function ($query) use ($type) {
+                    $query->whereNotNull('current_version_id')
+                        ->when($type, fn($q) => $q->where('type', $type))
+                        ->with('currentVersion')
+                        ->latest()
+                        ->limit(2);
+                }
+            ])
+            ->orderByDesc('news_count')
+            ->get();
 
         // Ambil data untuk hero section dari file action terpisah
         [
             'pinnedNews' => $pinnedNews,
             'latestNews' => $latestNews,
-        ] = $heroNewsSection->handle();
+        ] = $heroNewsSection->handle($type);
 
         return view('home', compact(
             'categories',

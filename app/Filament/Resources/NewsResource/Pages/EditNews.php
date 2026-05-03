@@ -27,6 +27,11 @@ class EditNews extends EditRecord
             $data['categories'] = $news->categories->pluck('id')->toArray();
         }
 
+        // Mutate field type dari News
+        if (!isset($data['type'])) {
+            $data['type'] = $news->type;
+        }
+
         return $data;
     }
 
@@ -40,7 +45,8 @@ class EditNews extends EditRecord
         // Hitung versi baru
         $newVersion = ($news->contents()->max('version') ?? 0) + 1;
         $isPublished = $data['is_published'] ?? false;
-
+        $status = $isPublished ? 'published' : 'draft';
+        
         // Panggil method CLouidnaryService
         $cloudinary = app(CloudinaryService::class);
 
@@ -85,6 +91,11 @@ class EditNews extends EditRecord
             $news->categories()->sync($data['categories']);
         } else {
             $news->categories()->detach();
+        }
+
+        // Update field type pada News
+        if (isset($data['type'])) {
+            $news->update(['type' => $data['type']]);
         }
 
         // Update current_version_id ke versi terbaru jika is_published nya true

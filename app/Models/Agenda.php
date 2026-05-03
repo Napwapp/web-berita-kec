@@ -6,6 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Builder;
 
+/**
+ * @method bool isUpcoming()
+ * @method bool isOngoing()
+ * @method bool isPast()
+ * @method bool isPublished()
+ * @method static publish()
+ * @method static unpublish()
+ * @method static archive()
+ * @method static unarchive()
+ * @method static setPublishedState(bool $shouldPublish)
+ */
 class Agenda extends Model
 {
     use SoftDeletes;
@@ -168,6 +179,12 @@ class Agenda extends Model
     public function isPast(): bool
     {
         return $this->end_at < now();
+    }
+
+    // Route model binding menggunakan slug
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
     }
 
 }

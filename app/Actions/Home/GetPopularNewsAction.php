@@ -17,6 +17,7 @@ class GetPopularNewsAction
     {
         return News::query()
             ->whereNotNull('current_version_id')
+            ->when(request('type'), fn($q) => $q->where('type', request('type')))
             ->with(['currentVersion', 'categories'])
             ->whereBetween('news.created_at', [now()->startOfWeek(), now()->endOfWeek()])
             ->selectRaw('news.*, (views * 1 + likes * 3) AS popularity_score')

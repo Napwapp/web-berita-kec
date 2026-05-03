@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Storage;
 use App\Notifications\ResetPasswordNotification;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+
 class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
@@ -86,4 +88,28 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->role === 'admin';
     }
+
+    // Notifications
+
+    // Semua Notifikasi milik user ini
+    public function notifications(): MorphMany
+    {
+        return $this->morphMany(Notification::class, 'notifiable')
+            ->latest();
+    }
+
+    // Notifikasi yang belum dibaca.
+    public function unreadNotifications(): MorphMany
+    {
+        return $this->morphMany(Notification::class, 'notifiable')
+            ->whereNull('read_at')
+            ->latest();
+    }
+
+    //  Jumlah notifikasi belum dibaca — untuk badge di navbar. Gunakan: $user->unread_notifications_count
+    public function getUnreadNotificationsCountAttribute(): int
+    {
+        return $this->unreadNotifications()->count();
+    }
+
 }

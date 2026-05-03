@@ -25,7 +25,7 @@
     <!-- Nanti buat agar mengambil first category dan title dari berita yang dibuka -->
     <x-breadcumb :items="[
         ['label' => 'Beranda', 'url' => '/'],
-        ['label' => 'Berita', 'url' => route('news.index')],
+        ['label' => 'Berita'],
         ['label' => $content->title]
     ]">
     </x-breadcumb>

@@ -14,6 +14,6 @@ class CategoryAgenda extends Model
 
     public function agendas()
     {
-        return $this->hasMany(Agenda::class);
+        return $this->hasMany(Agenda::class, 'category_id');
     }
 }

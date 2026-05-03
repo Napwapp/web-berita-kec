@@ -38,16 +38,18 @@ class CreateNews extends CreateRecord
             Storage::disk('local')->delete($thumbnailPath);
         }
 
+        // Simpan data is_published dan status di tabel news
+        $isPublished = $data['is_published'] ?? false;
+        $status = $isPublished ? 'published' : 'draft';
+        $excerpt = ExcerptHelper::generate($data['content'], 200);
 
         // Record news dengan author_id yang diambil dari user yang sedang login
         $news = News::create([
             'author_id' => Auth::id(),
+            'type' => $data['type'] ?? 'masyarakat',
             'slug' => $slug,
+            'status' => $status,
         ]);
-
-        // Simpan data is_published
-        $isPublished = $data['is_published'] ?? false;
-        $excerpt = ExcerptHelper::generate($data['content'], 200);
 
         // Buat record konten beritanya
         $newsContent = NewsContent::create([

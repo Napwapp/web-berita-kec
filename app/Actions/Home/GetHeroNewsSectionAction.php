@@ -14,14 +14,13 @@ class GetHeroNewsSectionAction
      *
      * @return array{ pinnedNews: News|null, latestNews: Collection }
      */
-    public function handle(): array
+    public function handle(?string $type = null): array
     {
-        // Base query biar tidak duplikat
         $baseQuery = News::query()
             ->whereNotNull('current_version_id')
+            ->when($type, fn($q) => $q->where('type', $type))
             ->with(['currentVersion', 'author', 'categories']);
 
-        // Pinned News
         $pinnedNews = (clone $baseQuery)
             ->whereNotNull('pinned_at')
             ->where(function ($q) {
@@ -30,7 +29,6 @@ class GetHeroNewsSectionAction
             })
             ->first();
 
-        // Kalau tidak ada pinned news, fallback ke berita terbaru
         if (!$pinnedNews) {
             $pinnedNews = (clone $baseQuery)
                 ->orderByDesc('created_at')

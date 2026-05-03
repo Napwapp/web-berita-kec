@@ -5,7 +5,7 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
                 <x-breadcumb :items="[
                     ['label' => 'Beranda', 'url' => '/'],
-                    ['label' => 'Berita',  'url' => route('news.index')],
+                    ['label' => 'Berita'],
                     ['label' => $category->name]
                 ]" />
                 <div class="flex items-start justify-between my-4">

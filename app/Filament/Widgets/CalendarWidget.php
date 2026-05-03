@@ -76,28 +76,6 @@ class CalendarWidget extends FullCalendarWidget
     }
 
     // ──────────────────────────────────────────────────────────────────────
-    // HElPER
-    // ──────────────────────────────────────────────────────────────────────
-
-    private function resolveEventColor(Agenda $agenda): string
-    {
-        // Gunakan warna kategori jika tersedia
-        if ($agenda->category?->color) {
-            return $agenda->category->color;
-        }
-
-        // Fallback berdasarkan status waktu
-        if ($agenda->isOngoing()) {
-            return '#16a34a'; // green-600 — sedang berlangsung
-        }
-
-        if ($agenda->isUpcoming()) {
-            return '#2563eb'; // blue-600  — akan datang
-        }
-        return '#9ca3af'; // gray-400  — sudah selesai
-    }
-
-    // ──────────────────────────────────────────────────────────────────────
     // DRAG & DROP — eventDrop
     // ──────────────────────────────────────────────────────────────────────
 
@@ -235,6 +213,28 @@ class CalendarWidget extends FullCalendarWidget
     }
 
 
+    // ──────────────────────────────────────────────────────────────────────
+    // HElPER
+    // ──────────────────────────────────────────────────────────────────────
+
+    private function resolveEventColor(Agenda $agenda): string
+    {
+        // Gunakan warna kategori jika tersedia
+        if ($agenda->category?->color) {
+            return $agenda->category->color;
+        }
+
+        // Fallback berdasarkan status waktu
+        if ($agenda->isOngoing()) {
+            return '#16a34a'; // green-600 — sedang berlangsung
+        }
+
+        if ($agenda->isUpcoming()) {
+            return '#2563eb'; // blue-600  — akan datang
+        }
+        return '#9ca3af'; // gray-400  — sudah selesai
+    }
+
     // Config untuk full calendar
     public function config(): array
     {
@@ -247,7 +247,7 @@ class CalendarWidget extends FullCalendarWidget
                 'center' => 'title',
                 'right' => 'dayGridMonth,timeGridWeek,timeGridDay,listMonth',
             ],
-        
+
 
             'buttonText' => [
                 'today' => 'Hari Ini',

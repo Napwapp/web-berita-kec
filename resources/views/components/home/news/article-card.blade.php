@@ -32,9 +32,11 @@
     </a>
     <div class="p-3">
         @if($showCategory && $news->categories->isNotEmpty())
-            <span class="inline-block text-xs font-medium px-2 py-0.5 rounded bg-green-50 text-green-700 mb-1.5">
-                {{ $news->categories->first()->name }}
-            </span>
+            @foreach($news->categories->take(2) as $category)
+                <span class="inline-block text-xs font-medium px-2 py-0.5 rounded bg-green-50 text-green-700 mb-1.5 mr-1">
+                    {{ $category->name }}
+                </span>
+            @endforeach
         @endif
 
         <a href="{{ route('news.show', $news->slug) }}" class="block">

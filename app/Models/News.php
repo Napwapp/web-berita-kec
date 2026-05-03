@@ -9,9 +9,11 @@ class News extends Model
     protected $fillable = [
         'author_id',
         'slug',
+        'status',
         'current_version_id',
         'likes',
         'views',
+        'type',
         'pinned_at',
         'pin_expired_at',
     ];
@@ -60,6 +62,8 @@ class News extends Model
         $this->pin_expired_at = null;
         $this->save();
     }
+
+    
 
     // Method untuk memeriksa apakah berita dipin
     public function isPinned(): bool

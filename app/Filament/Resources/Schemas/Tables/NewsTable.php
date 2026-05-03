@@ -81,8 +81,21 @@ class NewsTable
                     ->searchable()
                     ->sortable(),
 
+                TextColumn::make('news.author.role')
+                    ->label('Peran Penulis')
+                    ->formatStateUsing(fn($state) => match ($state) {
+                        'user' => 'Masyarakat',
+                        'admin' => 'Admin',
+                        default => ucfirst($state)
+                    })
+                    ->sortable(),
+
                 TextColumn::make('version')
                     ->label('Versi')
+                    ->sortable(),
+
+                TextColumn::make('news.type')
+                    ->label('Tipe Berita')
                     ->sortable(),
 
                 TextColumn::make('news.categories.name')
@@ -91,15 +104,34 @@ class NewsTable
                     ->separator(',')
                     ->placeholder('-'),
 
-                TextColumn::make('is_published')
+                TextColumn::make('news.status')
                     ->label('Status Publikasi')
                     ->badge()
-                    ->icon(fn($state) => $state ? 'heroicon-o-check-circle' : 'heroicon-o-clock')
-                    ->color(fn($state) => $state ? 'success' : 'warning')
-                    ->formatStateUsing(fn($state) => $state ? 'Telah Dipublikasi' : 'Draft'),
+                    ->icon(fn($state) => match ($state) {
+                        'published' => 'heroicon-o-check-circle',
+                        'review' => 'heroicon-o-eye',
+                        'need_revision' => 'heroicon-o-pencil-square',
+                        'rejected' => 'heroicon-o-x-circle',
+                        default => 'heroicon-o-clock',
+                    })
+                    ->color(fn($state) => match ($state) {
+                        'published' => 'success',
+                        'review' => 'info',
+                        'need_revision' => 'warning',
+                        'rejected' => 'danger',
+                        default => 'gray',
+                    })
+                    ->formatStateUsing(fn($state) => match ($state) {
+                        'published' => 'Telah Dipublikasi',
+                        'review' => 'Perlu Direview',
+                        'need_revision' => 'Perlu Direview untuk Revisi',
+                        'rejected' => 'Ditolak',
+                        'draft' => 'Draft',
+                        default => ucfirst($state),
+                    }),
 
                 TextColumn::make('published_at')
-                    ->label('Tanggal Publikasi')
+                    ->label('Dipublikasi Pada')
                     ->dateTime('d M Y')
                     ->sortable()
                     ->placeholder('Belum dipublikasi'),
@@ -120,11 +152,30 @@ class NewsTable
                     ->multiple()
                     ->preload(),
 
-                TernaryFilter::make('is_published')
-                    ->label('Status Publikasi')
-                    ->placeholder('Semua')
-                    ->trueLabel('Sudah Dipublikasi')
-                    ->falseLabel('Draft'),
+                SelectFilter::make('news.status')
+                    ->label('Status Berita')
+                    ->options([
+                        'published' => 'Telah Dipublikasi',
+                        'review' => 'Perlu Direview',
+                        'need_revision' => 'Perlu Direview untuk Revisi',
+                        'rejected' => 'Ditolak',
+                        'draft' => 'Draft',
+                    ])
+                    ->placeholder('Semua'),
+
+                SelectFilter::make('author_role')
+                    ->label('Peran Penulis')
+                    ->options([
+                        'admin' => 'Admin',
+                        'user' => 'Masyarakat',
+                    ])
+                    ->query(
+                        fn(Builder $query, array $data) =>
+                        $data['value']
+                        ? $query->whereHas('news.author', fn($q) => $q->where('role', $data['value']))
+                        : $query
+                    )
+                    ->placeholder('Semua'),
             ])
 
             ->actions([
@@ -135,16 +186,18 @@ class NewsTable
                     ->action(function (\App\Models\NewsContent $record) {
                         $record->publish();
                     })
-                    ->visible(fn($record) => !$record->is_published),
+                    ->visible( fn($record) =>
+                        !$record->is_published &&
+                        !in_array($record->news?->status, ['review', 'need_revision', 'rejected', 'archive'])
+                    ),
 
                 // Pin Berita
                 Action::make('pin')
                     ->label('Sematkan')
                     ->icon('heroicon-o-bookmark')
                     ->color('warning')
-                    ->visible(fn($record) => $record->is_published && !$record->news?->isPinned())
+                    ->visible(fn($record) => $record->is_published && !$record->news?->isPinned() && $record->news->status == 'published')
 
-                    // 
                     ->modalHeading(function (\App\Models\NewsContent $record) {
                         $pinnedNews = \App\Models\News::whereNotNull('pinned_at')
                             ->where(function ($q) {
@@ -245,6 +298,60 @@ class NewsTable
                             ->title('Sematan berhasil dicabut!')
                             ->send();
                     }),
+
+                // Setujui Berita user untuk diterbitkan
+                Action::make('accept')
+                    ->label('Terima')
+                    ->icon('heroicon-o-check-circle')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->modalHeading('Setujui Berita untuk Diterbitkan')
+                    ->modalDescription('Berita ini akan diterbitkan dan ditampilkan ke publik.')
+                    ->action(function (\App\Models\NewsContent $record) {
+                        $record->accept();
+
+                        Notification::make()
+                            ->success()
+                            ->title('Berita disetujui. Berita berhasil diterbitkan!')
+                            ->send();
+
+                    })
+                    ->visible(
+                        fn($record) =>
+                        $record->news?->author?->role === 'user' &&
+                        in_array($record->news?->status, ['review', 'need_revision'])
+                    ),
+
+                // Tolak Berita user untuk diterbitkan
+                Action::make('reject')
+                    ->label('Tolak')
+                    ->icon('heroicon-o-x-circle')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->modalHeading('Tolak Berita')
+                    ->modalDescription('Berita akan ditolak dan tidak akan diterbitkan.')
+                    ->form([
+                        \Filament\Forms\Components\Textarea::make('reason')
+                            ->label('Alasan Penolakan')
+                            ->placeholder('Masukkan alasan penolakan...')
+                            ->rows(3)
+                            ->required(),
+                    ])
+                    ->action(function (\App\Models\NewsContent $record, array $data) {
+                        // Semua logika (update status + notifikasi) ada di method reject()
+                        $record->reject(reason: $data['reason']);
+
+                        Notification::make()
+                            ->danger()
+                            ->title('Berita berhasil ditolak')
+                            ->send();
+                    })
+                    ->visible(
+                        fn($record) =>
+                        $record->news?->author?->role === 'user' &&
+                        in_array($record->news?->status, ['review', 'need_revision'])
+                    ),
+
 
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),

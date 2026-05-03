@@ -34,9 +34,11 @@
                     </x-navbar.nav-link>
 
                     <x-navbar.nav-link href="{{ route('struktur-organisasi') }}" :active="request()->routeIs('struktur-organisasi')">Struktur Organisasi Kecamatan Binong</x-navbar.nav-link>
-                    <x-navbar.nav-link href="{{ route('agenda.index') }}" :active="request()->routeIs('agenda.index')">Agenda</x-navbar.nav-link>
-                    <x-navbar.nav-link href="/">Berita Pemerintahan</x-navbar.nav-link>
-                    <x-navbar.nav-link href="/">Pengumuman</x-navbar.nav-link>
+                    <x-navbar.nav-link href="{{ route('agenda.index') }}" :active="request()->routeIs(['agenda.index', 'agenda.show'])">Agenda Kecamatan Binong</x-navbar.nav-link>
+                    <x-navbar.nav-link href="{{ route('news.create') }}" :active="request()->routeIs('news.create')" class="gap-2">
+                        Upload Berita
+                        <i class="fa-solid fa-plus text-green-600 font-semibold"></i>
+                    </x-navbar.nav-link>
                 </div>                       
             </div>
 

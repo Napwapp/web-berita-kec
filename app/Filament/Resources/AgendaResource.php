@@ -6,52 +6,23 @@ use App\Filament\Resources\AgendaResource\Pages;
 use Filament\Resources\Resource;
 use App\Filament\Resources\Schemas\Forms\AgendaForms;
 use App\Filament\Resources\Schemas\Tables\AgendaTables;
-
-// Models
 use App\Models\Agenda;
-use App\Models\CategoryAgenda;
-
-// Filament Tables
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\IconColumn;
-use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Filters\TernaryFilter;
-use Filament\Tables\Filters\Filter;
-
-// Filament Forms
-use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Forms\Components\Group;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\ColorPicker;
-use Filament\Forms\Components\Placeholder;
-use Filament\Forms\Get;
-use Filament\Forms\Set;
-use Filament\Forms\Components\Actions\Action;
-
-// Eloquent
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Carbon\Carbon;
 
-// Support
-use Illuminate\Support\Str;
 
 class AgendaResource extends Resource
 {
     protected static ?string $model = Agenda::class;
     protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
-    protected static ?string $navigationLabel = 'Agenda';
-    protected static ?string $modelLabel = 'Agenda';
+    protected static ?string $navigationLabel = 'Agenda Kecamatan';
+    protected static ?string $modelLabel = 'Agenda Kecamatan';
     protected static ?string $pluralModelLabel = 'Agenda';
+    protected static ?string $navigationGroup = 'Kelola Agenda Kecamatan';
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
@@ -64,14 +35,15 @@ class AgendaResource extends Resource
     {
         return AgendaTables::table($table) // Tabel di file terpisah
 
-        // Actions
+            // Actions
             ->actions([
                 // Publikasi dan Archive
                 Tables\Actions\Action::make('publish')
                     ->label('Terbitkan')
                     ->icon('heroicon-m-paper-airplane')
                     ->color('success')
-                    ->visible(fn($record) =>
+                    ->visible(
+                        fn($record) =>
                         !$record->trashed() && $record->status === 'draft'
                     )
                     ->requiresConfirmation()
@@ -95,7 +67,7 @@ class AgendaResource extends Resource
                     ->label('Lepas Arsip')
                     ->icon('heroicon-m-arrow-uturn-left')
                     ->color('info')
-                    ->visible(fn($record) => !$record->trashed() && $record->status === 'archived' )
+                    ->visible(fn($record) => !$record->trashed() && $record->status === 'archived')
                     ->requiresConfirmation()
                     ->modalHeading('Lepas Arsip Agenda?')
                     ->modalDescription('Agenda ini akan kembali ditampilkan ke publik.')
@@ -106,7 +78,7 @@ class AgendaResource extends Resource
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
-            
+
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\BulkAction::make('bulk_publish')

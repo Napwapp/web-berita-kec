@@ -189,4 +189,10 @@ class NewsController extends Controller
 
         return view('news.search', compact('results', 'query', 'total'));
     }
+
+    // Upload berita untk role user yang terautentikasi
+    public function create()
+    {
+        return view('news.upload.create');
+    }
 }
