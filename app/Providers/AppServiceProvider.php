@@ -13,6 +13,8 @@ use App\Models\NewsContent;
 use App\Observers\NewsContentObserver;
 use Illuminate\Support\Facades\View;
 use App\View\Composers\NavbarComposer;
+use App\Models\News;
+use Illuminate\Support\Facades\Auth;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -37,6 +39,30 @@ class AppServiceProvider extends ServiceProvider
             ['components.navbar.index', 'components.navbar.all-categories'],
             NavbarComposer::class
         );
+
+        View::composer('components.dashboard.layout', function ($view) {
+            if (!Auth::check()) {
+                $view->with('sidebarCounts', array_fill_keys(
+                    ['all', 'published', 'review', 'need_revision', 'rejected', 'draft'],
+                    0
+                ));
+                return;
+            }
+
+            $statusCounts = News::where('author_id', Auth::id())
+                ->selectRaw('status, count(*) as total')
+                ->groupBy('status')
+                ->pluck('total', 'status');
+
+            $view->with('sidebarCounts', [
+                'all' => $statusCounts->sum(),
+                'published' => $statusCounts->get('published', 0),
+                'review' => $statusCounts->get('review', 0),
+                'need_revision' => $statusCounts->get('need_revision', 0),
+                'rejected' => $statusCounts->get('rejected', 0),
+                'draft' => $statusCounts->get('draft', 0),
+            ]);
+        });
 
         FilamentAsset::register([
             Css::make('app', Vite::asset('resources/css/app.css')),

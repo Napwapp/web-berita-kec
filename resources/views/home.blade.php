@@ -5,7 +5,6 @@
 <x-app title="Beranda">
     <div class="max-w-7xl mx-auto mb-4 px-2">
         <div class="inline-flex rounded-xl bg-gray-100 p-1">
-
             {{-- Semua --}}
             <a href="{{ url()->current() }}" class="px-4 py-2 text-sm font-medium rounded-lg transition
             {{ !$currentType
@@ -29,7 +28,6 @@
                 : 'text-gray-600 hover:text-green-600' }}">
                 Pemerintahan
             </a>
-
         </div>
     </div>
 

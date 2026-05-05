@@ -1,4 +1,4 @@
-<x-app title="Profil Saya" :showNavbar="false">
+<x-dashboard.layout title="Profil Saya">
     <div x-data="{ modal: null, successMessage: null,
         init() {
             let msg = sessionStorage.getItem('success_message');
@@ -8,7 +8,7 @@
             }
         }}" @keydown.escape.window="modal = null">
 
-        
+
         <div x-show="successMessage" x-transition
             class="flex items-center justify-between gap-2 px-4 py-3 border text-sm rounded-xl bg-green-100 border-green-500 text-green-700 max-w-2xl mx-auto">
             <div class="flex items-center gap-2">
@@ -22,7 +22,7 @@
         </div>
 
         <div class="min-h-screen bg-gray-50">
-            <div class="max-w-4xl mx-auto space-y-6">
+            <div class=" mx-auto space-y-6">
                 {{-- ── Header / Hero Card ─────────────────────────────────────────── --}}
                 <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
                     {{-- Banner strip --}}
@@ -63,8 +63,9 @@
                                 @auth
                                     <form method="POST" action="{{ route('logout') }}">
                                         @csrf
-                                
-                                        <button type="submit" class="bg-red-600 hover:bg-red-700 text-white text-sm px-4 py-2 rounded-lg">
+
+                                        <button type="submit"
+                                            class="bg-red-600 hover:bg-red-700 text-white text-sm px-4 py-2 rounded-lg">
                                             <i class="fa-solid fa-right-from-bracket"></i>
                                             Logout
                                         </button>
@@ -318,18 +319,13 @@
                         <label class="block text-xs font-medium text-gray-600 mb-1.5">
                             Email
                         </label>
-                        <input
-                            type="email"
-                            name="email"
-                            value="{{ auth()->user()->email }}"
-                            disabled
-                            class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-gray-50 text-gray-400 cursor-not-allowed"
-                        />
+                        <input type="email" name="email" value="{{ auth()->user()->email }}" disabled
+                            class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-gray-50 text-gray-400 cursor-not-allowed" />
                         <p class="mt-1.5 text-xs text-gray-400 flex items-center gap-1">
                             <i class="fas fa-circle-info"></i>
                             Email tidak dapat diubah untuk saat ini. Dikarenakan fitur belum tersedia
                         </p>
-                    </div>                   
+                    </div>
 
                     <div class="flex items-center justify-end gap-3 pt-2">
                         <button type="button" onclick="closeModal('modal-edit-profil')"
@@ -464,4 +460,4 @@
 
         </script>
     </div>
-</x-app>
+</x-dashboard.layout>

@@ -89,7 +89,7 @@ class User extends Authenticatable implements FilamentUser
         return $this->role === 'admin';
     }
 
-    // Notifications
+    // Notifications //
 
     // Semua Notifikasi milik user ini
     public function notifications(): MorphMany

@@ -190,9 +190,87 @@ class NewsController extends Controller
         return view('news.search', compact('results', 'query', 'total'));
     }
 
-    // Upload berita untk role user yang terautentikasi
+
+    // Manage Berita User //    
+    public function userNews(Request $request)
+    {
+        $user = Auth::user();
+        $isAdmin = $user->role === 'admin';
+
+        // Batasi status berita sesuai role nya
+        $allowedStatuses = $isAdmin
+            ? ['published', 'draft']
+            : ['published', 'review', 'need_revision', 'rejected'];
+
+        // Redirect ke url bersih jika ada yang mencoba mengakses status diluar rolenya
+        $status = $request->get('status');
+        if ($status && !in_array($status, $allowedStatuses)) {
+            return redirect()->route('user.news');
+        }
+
+        // Pagination per page
+        $perPageRaw = $request->get('per_page', 9);
+        $allowedPerPage = [9, 18, 27, 50, 'all'];
+
+        if (!in_array($perPageRaw, $allowedPerPage, strict: true) &&
+            !in_array((int) $perPageRaw, $allowedPerPage, strict: true)) { $perPageRaw = 9; }
+
+        $showAll = $perPageRaw === 'all';
+        $perPage = $showAll ? PHP_INT_MAX : (int) $perPageRaw;
+        
+
+        // Query utama
+        $query = News::where('author_id', $user->id)
+            ->with([
+                'currentVersion',
+                'categories',
+            ])
+            ->latest();
+
+        // Filter by status dengan query
+        if ($status) {
+            $query->where('status', $status);
+        } else {
+            $query->whereIn('status', $allowedStatuses);
+        }
+
+        $news = $query->paginate($perPage)->withQueryString();
+
+        // Counter untuk tabs
+        $statusCounts = News::where('author_id', $user->id)
+            ->whereIn('status', $allowedStatuses)
+            ->selectRaw('status, count(*) as total')
+            ->groupBy('status')
+            ->pluck('total', 'status');
+
+        $counts = [
+            'all' => $statusCounts->sum(),
+            'published' => $statusCounts->get('published', 0),
+            'review' => $statusCounts->get('review', 0),
+            'need_revision' => $statusCounts->get('need_revision', 0),
+            'rejected' => $statusCounts->get('rejected', 0),
+            'draft' => $statusCounts->get('draft', 0),
+        ];
+
+        // Definisikan tabs
+        $tabs = [['key' => 'all', 'label' => 'Semua', 'count' => $counts['all']]];
+
+        if ($isAdmin) {
+            $tabs[] = ['key' => 'published', 'label' => 'Diterbitkan', 'count' => $counts['published']];
+            $tabs[] = ['key' => 'draft', 'label' => 'Draft', 'count' => $counts['draft']];
+        } else {
+            $tabs[] = ['key' => 'published', 'label' => 'Diterbitkan', 'count' => $counts['published']];
+            $tabs[] = ['key' => 'review', 'label' => 'Sedang Diproses', 'count' => $counts['review']];
+            $tabs[] = ['key' => 'need_revision', 'label' => 'Review Ulang', 'count' => $counts['need_revision']];
+            $tabs[] = ['key' => 'rejected', 'label' => 'Ditolak', 'count' => $counts['rejected']];
+        }
+
+        return view('users.dashboard.index', compact('news', 'counts', 'tabs', 'status', 'perPage', 'perPageRaw'));
+    }
+
+    // Halaman upload berita
     public function create()
     {
-        return view('news.upload.create');
+        return view('users.dashboard.upload.create');
     }
 }

@@ -24,13 +24,16 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile/foto', [ProfileController::class, 'hapusFoto'])->name('profile.foto.hapus');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    Route::get('/berita-saya', [Controllers\NewsController::class, 'userNews'])->name('user.news');
+
     // Request yang hanya bisa oleh user
     Route::post('/news/{news}/like', [Controllers\NewsController::class, 'like'])->name('news.like');
 });
 
 // User
 Route::middleware(['auth', 'user'])->group(function () {
-    Route::get('/upload-berita', [Controllers\NewsController::class, 'create'])->name('news.create');
+    Route::get('/berita-saya/upload-berita', [Controllers\NewsController::class, 'create'])->name('news.create');
+    Route::get('/pesan-masuk', [Controllers\NotificationController::class, 'index'])->name('notifications.index');
 });
 
 // admin
